@@ -126,6 +126,7 @@ export default function EstatePage({ session, profile, onToast }) {
           { path:`/estate/${id}/tasks`, emoji:"📋", label:"Task checklist", desc:"Step-by-step guide", color:"#fef3e8", border:"#e8c4a0" },
           { path:`/estate/${id}/documents`, emoji:"🔒", label:"Document vault", desc:"Wills, deeds, IDs", color:"#e8f0fe", border:"#b3c6f5" },
           { path:`/estate/${id}/heirs`, emoji:"👨‍👩‍👧", label:"Heirs & distribution", desc:"Fair split calculator", color:"#f0faf0", border:"#b8ddb8" },
+          { path:`/estate/${id}/goodwill`, emoji:"⭐", label:"Goodwill & work", desc:"Tasks, fairness, karma", color:"#fef9e8", border:"#e8d8a0" },
         ].map(mod => (
           <button key={mod.path} onClick={()=>navigate(mod.path)} style={{ padding:"16px", background:mod.color, border:`1px solid ${mod.border}`, borderRadius:"10px", cursor:"pointer", textAlign:"left", fontFamily:"DM Sans, sans-serif" }}>
             <div style={{ fontSize:"24px", marginBottom:"6px" }}>{mod.emoji}</div>

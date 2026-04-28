@@ -14,6 +14,7 @@ import FounderPage from './pages/FounderPage'
 import TasksPage from './pages/TasksPage'
 import DocumentVaultPage from './pages/DocumentVaultPage'
 import HeirsPage from './pages/HeirsPage'
+import GoodwillPage from './pages/GoodwillPage'
 import { JoinPage, PricingPage, CategoriesPage } from './pages/OtherPages'
 import TopBar from './components/TopBar'
 import Toast from './components/Toast'
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="/estate/:id/categories" element={<CategoriesPage session={session} onToast={showToast} />} />
           <Route path="/estate/:id/tasks" element={<TasksPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/documents" element={<DocumentVaultPage session={session} profile={profile} onToast={showToast} />} />
+          <Route path="/estate/:id/goodwill" element={<GoodwillPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/heirs" element={<HeirsPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/join/:code" element={<JoinPage session={session} onToast={showToast} />} />
           <Route path="/pricing" element={<PricingPage session={session} />} />

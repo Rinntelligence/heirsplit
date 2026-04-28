@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import AIAssistant from '../components/AIAssistant'
 import { getItem, addInterest, removeInterest, deleteItem, getComments, addComment, deleteComment, assignItem, getEstateMembers, supabase } from '../lib/supabase'
 import { usePlan } from '../hooks/usePlan'
 import { Avatar } from '../components/UI'
@@ -184,6 +185,9 @@ export default function ItemDetailPage({ session, profile, onToast }) {
           </div>
         )}
       </div>
+
+      {/* AI Assistant */}
+      <AIAssistant item={item} profile={profile} />
 
       {/* Comments */}
       <div style={{ background:'#fff', border:'1px solid #e8e0d6', borderRadius:'14px', padding:'28px' }}>
