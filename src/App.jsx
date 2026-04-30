@@ -18,6 +18,7 @@ import GoodwillPage from './pages/GoodwillPage'
 import { JoinPage, PricingPage, CategoriesPage } from './pages/OtherPages'
 import TopBar from './components/TopBar'
 import Toast from './components/Toast'
+import LanguageSwitcher from './components/LanguageSwitcher'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -65,6 +66,7 @@ export default function App() {
       <div style={{ minHeight: '100vh', background: '#f8f5f0' }}>
         <TopBar profile={profile} session={session} onToast={showToast} />
         {toast && <Toast msg={toast.msg} type={toast.type} />}
+        <LanguageSwitcher />
         <Routes>
           <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => { setProfile(p); navigate('/') }} onToast={showToast} />} />
