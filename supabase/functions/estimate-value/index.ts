@@ -1,166 +1,132 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
 const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY')
-const EBAY_APP_ID = Deno.env.get('EBAY_APP_ID')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Depreciation rates per year by category (insurance model)
+// Depreciation rates per category
 const DEPRECIATION_RATES: Record<string, number> = {
-  'Electronics': 0.30,        // 30% per year - fast depreciation
-  'Furniture': 0.08,          // 8% per year - slow, quality holds
-  'Art & pictures': 0.02,     // 2% - can appreciate
-  'Jewelry': 0.03,            // 3% - gold/silver holds value
-  'Books': 0.10,              // 10% per year
-  'Kitchen': 0.12,            // 12% per year
-  'Clothing & textiles': 0.20, // 20% per year
-  'Tools': 0.10,              // 10% per year
-  'Sports & outdoors': 0.15,  // 15% per year
-  'Collectibles': -0.03,      // Appreciates 3% per year on average
-  'Decorations': 0.08,        // 8% per year
-  'Other': 0.12,              // Default 12%
+  'Electronics': 0.30, 'Furniture': 0.08, 'Art & pictures': 0.02,
+  'Jewelry': 0.03, 'Books': 0.10, 'Kitchen': 0.12,
+  'Clothing & textiles': 0.20, 'Collectibles': -0.03,
+  'Tools': 0.10, 'Sports & outdoors': 0.15, 'Decorations': 0.08, 'Other': 0.12,
+}
+const VALUE_FLOORS: Record<string, number> = {
+  'Electronics': 0.05, 'Furniture': 0.20, 'Art & pictures': 0.30,
+  'Jewelry': 0.40, 'Collectibles': 0.50, 'Other': 0.10,
 }
 
-// Minimum value floor (% of original)
-const VALUE_FLOOR: Record<string, number> = {
-  'Electronics': 0.05,
-  'Furniture': 0.20,
-  'Art & pictures': 0.30,
-  'Jewelry': 0.40,
-  'Collectibles': 0.50,
-  'Other': 0.10,
-}
-
-async function searchEbay(query: string): Promise<any[]> {
-  if (!EBAY_APP_ID) return []
-  
-  try {
-    const encoded = encodeURIComponent(query)
-    const url = `https://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.0.0&SECURITY-APPNAME=${EBAY_APP_ID}&RESPONSE-DATA-FORMAT=JSON&keywords=${encoded}&itemFilter(0).name=SoldItemsOnly&itemFilter(0).value=true&paginationInput.entriesPerPage=5&sortOrder=EndTimeSoonest`
-    
-    const res = await fetch(url)
-    const data = await res.json()
-    const items = data?.findCompletedItemsResponse?.[0]?.searchResult?.[0]?.item || []
-    
-    return items.map((item: any) => ({
-      title: item.title?.[0],
-      price: parseFloat(item.sellingStatus?.[0]?.currentPrice?.[0]?.__value__ || 0),
-      currency: item.sellingStatus?.[0]?.currentPrice?.[0]?.['@currencyId'] || 'USD',
-      soldDate: item.listingInfo?.[0]?.endTime?.[0],
-      url: item.viewItemURL?.[0],
-    }))
-  } catch {
-    return []
-  }
-}
-
-async function getAIEstimate(title: string, description: string, category: string, condition: string, ebayResults: any[]): Promise<any> {
-  const ebayContext = ebayResults.length > 0 
-    ? `Recent eBay sold listings for similar items:\n${ebayResults.map(e => `- ${e.title}: ${e.currency} ${e.price}`).join('\n')}`
-    : 'No eBay data available.'
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-opus-4-5',
-      max_tokens: 1024,
-      messages: [{
-        role: 'user',
-        content: `You are an expert estate appraiser with 20 years experience. Estimate the current market value of this item.
-
-Item: ${title}
-Description: ${description}
-Category: ${category}
-Condition: ${condition}
-
-${ebayContext}
-
-Consider:
-- Current market demand
-- Condition impact on value
-- Regional variations (Norway/Scandinavia market if applicable)
-- Sentimental vs market value difference
-
-Respond ONLY with JSON:
-{
-  "low_estimate": <number in USD>,
-  "high_estimate": <number in USD>,
-  "most_likely": <number in USD>,
-  "currency": "USD",
-  "confidence": "high|medium|low",
-  "reasoning": "2-3 sentences explaining the estimate",
-  "value_drivers": ["factor1", "factor2"],
-  "market_notes": "Any relevant market context",
-  "nok_multiplier": 10.5
-}`
-      }]
-    })
-  })
-
-  const data = await response.json()
-  const text = data.content[0].text
-  const jsonMatch = text.match(/\{[\s\S]*\}/)
-  if (!jsonMatch) throw new Error('No JSON')
-  return JSON.parse(jsonMatch[0])
+// Free price sources by category
+const PRICE_SOURCES: Record<string, string[]> = {
+  'Electronics': ['finn.no', 'prisjakt.no', 'ebay.com'],
+  'Furniture': ['finn.no', 'ikea.com', 'ebay.com'],
+  'Art & pictures': ['finn.no', 'ebay.com', 'invaluable.com'],
+  'Jewelry': ['finn.no', 'ebay.com', 'pricecharting.com'],
+  'Collectibles': ['ebay.com', 'pricecharting.com', 'finn.no'],
+  'Books': ['finn.no', 'ebay.com', 'bokkilden.no'],
+  'Other': ['finn.no', 'ebay.com'],
 }
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
-    const { title, description, category, condition, purchase_price, purchase_year } = await req.json()
+    const { title, description, category, condition, purchase_price, purchase_year, ai_identified_model } = await req.json()
 
-    // 1. Calculate depreciation-based estimate
+    // 1. Depreciation calc if we have purchase data
     let depreciationEstimate = null
     if (purchase_price && purchase_year) {
       const yearsOld = new Date().getFullYear() - parseInt(purchase_year)
       const rate = DEPRECIATION_RATES[category] || 0.12
-      const floor = VALUE_FLOOR[category] || 0.10
+      const floor = VALUE_FLOORS[category] || 0.10
       const depreciated = purchase_price * Math.pow(1 - rate, yearsOld)
-      const floorValue = purchase_price * floor
       depreciationEstimate = {
-        value: Math.max(depreciated, floorValue),
+        value: Math.max(depreciated, purchase_price * floor),
         years_old: yearsOld,
         rate_used: rate,
         original_price: purchase_price,
-        method: 'insurance_depreciation'
       }
     }
 
-    // 2. Search eBay for similar sold items
-    const ebayQuery = `${title} ${condition}`.trim()
-    const ebayResults = await searchEbay(ebayQuery)
+    // 2. AI market estimate — use haiku (cheapest) for value, only sonnet for images
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001', // cheapest model — ~$0.001 per call
+        max_tokens: 600,
+        messages: [{
+          role: 'user',
+          content: `You are an expert Norwegian estate appraiser. Estimate the current Norwegian market value (in NOK) for this item.
 
-    // 3. Get AI market estimate
-    const aiEstimate = await getAIEstimate(title, description, category, condition, ebayResults)
+Item: ${title}
+Description: ${description || 'No description'}
+Category: ${category}
+Condition: ${condition || 'good'}
+${ai_identified_model ? `AI identified as: ${ai_identified_model}` : ''}
+${purchase_price ? `Original price: ${purchase_price} NOK (${purchase_year})` : ''}
+
+Use your knowledge of:
+- Current Norwegian second-hand market (finn.no prices)
+- Typical depreciation for this category
+- The specific model/brand if identifiable
+- Condition impact
+
+Respond ONLY with this JSON (no other text):
+{
+  "low_nok": <number>,
+  "high_nok": <number>,
+  "likely_nok": <number>,
+  "reasoning": "2 sentences max explaining the estimate",
+  "market_references": ["e.g. Similar Samsung TV on finn.no: 1500-2500 kr", "eBay completed listings: $150-200"],
+  "price_check_urls": ["https://www.finn.no/bap/forsale/search.html?q=SEARCH_TERM", "https://www.ebay.com/sch/i.html?_nkw=SEARCH_TERM"],
+  "estimated_year": "e.g. 2018-2020",
+  "confidence": "high|medium|low",
+  "category_trend": "appreciating|stable|depreciating"
+}`
+        }]
+      })
+    })
+
+    const data = await response.json()
+    const text = data.content[0].text
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) throw new Error('No JSON in response')
+    const aiEstimate = JSON.parse(jsonMatch[0])
+
+    // Fill in search URLs with actual item title
+    const searchTerm = encodeURIComponent(title.split(' ').slice(0, 4).join(' '))
+    aiEstimate.price_check_urls = [
+      `https://www.finn.no/bap/forsale/search.html?q=${searchTerm}`,
+      `https://www.ebay.com/sch/i.html?_nkw=${searchTerm}&LH_Sold=1&LH_Complete=1`,
+    ]
+
+    const sources = PRICE_SOURCES[category] || PRICE_SOURCES['Other']
 
     return new Response(JSON.stringify({
       success: true,
       data: {
         depreciation: depreciationEstimate,
         market: aiEstimate,
-        ebay_sold: ebayResults,
+        price_sources: sources,
         summary: {
-          low_nok: Math.round(aiEstimate.low_estimate * (aiEstimate.nok_multiplier || 10.5)),
-          high_nok: Math.round(aiEstimate.high_estimate * (aiEstimate.nok_multiplier || 10.5)),
-          likely_nok: Math.round(aiEstimate.most_likely * (aiEstimate.nok_multiplier || 10.5)),
+          low_nok: aiEstimate.low_nok,
+          high_nok: aiEstimate.high_nok,
+          likely_nok: aiEstimate.likely_nok,
         }
       }
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    })
+    }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+
   } catch (error) {
     return new Response(JSON.stringify({ success: false, error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   }
 })
