@@ -62,8 +62,46 @@ export const getItem = (id) =>
     .select('*, categories(label, emoji), interests(*, profiles(display_name, avatar_color)), assigned_to_profile:profiles!items_assigned_to_fkey(display_name, avatar_color)')
     .eq('id', id).single()
 
-export const createItem = (data) =>
-  supabase.from('items').insert(data).select().single()
+// Safe createItem — only sends columns that definitely exist
+export const createItem = async (data) => {
+  // Base columns that always exist
+  const safe = {
+    estate_id: data.estate_id,
+    title: data.title,
+    description: data.description || null,
+    category_id: data.category_id || null,
+    image_url: data.image_url || null,
+    added_by: data.added_by || null,
+    added_by_name: data.added_by_name || null,
+    status: data.status || 'active',
+  }
+
+  // Try to add optional columns — if they cause error we catch below
+  if (data.estimated_value) safe.estimated_value = data.estimated_value
+  if (data.condition) safe.condition = data.condition
+  if (data.purchase_price) safe.purchase_price = data.purchase_price
+  if (data.purchase_year) safe.purchase_year = data.purchase_year
+
+  const result = await supabase.from('items').insert(safe).select().single()
+
+  // If condition/purchase columns don't exist yet, retry without them
+  if (result.error?.message?.includes('column')) {
+    const minimal = {
+      estate_id: safe.estate_id,
+      title: safe.title,
+      description: safe.description,
+      category_id: safe.category_id,
+      image_url: safe.image_url,
+      added_by: safe.added_by,
+      added_by_name: safe.added_by_name,
+      status: safe.status,
+      estimated_value: data.estimated_value || null,
+    }
+    return supabase.from('items').insert(minimal).select().single()
+  }
+
+  return result
+}
 
 export const updateItem = (id, data) =>
   supabase.from('items').update(data).eq('id', id).select().single()
@@ -97,12 +135,6 @@ export const deleteComment = (id) =>
 // ── Categories ────────────────────────────────────────────────────────────────
 export const getCategories = () =>
   supabase.from('categories').select('*').order('label')
-
-export const createCategory = (data) =>
-  supabase.from('categories').insert(data).select().single()
-
-export const deleteCategory = (id) =>
-  supabase.from('categories').delete().eq('id', id)
 
 // ── Feedback ──────────────────────────────────────────────────────────────────
 export const submitFeedback = (user_id, estate_id, type, content, nps_score) =>

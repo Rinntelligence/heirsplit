@@ -1,313 +1,46 @@
-// ── i18n — 10 languages ──────────────────────────────────────────────────────
 export const LANGUAGES = [
-  { code: 'no', label: 'Norsk', flag: '🇳🇴', currency: 'NOK', currencySymbol: 'kr', marketUrl: 'finn.no', rtl: false },
-  { code: 'en', label: 'English', flag: '🇬🇧', currency: 'USD', currencySymbol: '$', marketUrl: 'ebay.com', rtl: false },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪', currency: 'EUR', currencySymbol: '€', marketUrl: 'ebay.de', rtl: false },
-  { code: 'fr', label: 'Français', flag: '🇫🇷', currency: 'EUR', currencySymbol: '€', marketUrl: 'leboncoin.fr', rtl: false },
-  { code: 'es', label: 'Español', flag: '🇪🇸', currency: 'EUR', currencySymbol: '€', marketUrl: 'wallapop.com', rtl: false },
-  { code: 'sv', label: 'Svenska', flag: '🇸🇪', currency: 'SEK', currencySymbol: 'kr', marketUrl: 'blocket.se', rtl: false },
-  { code: 'da', label: 'Dansk', flag: '🇩🇰', currency: 'DKK', currencySymbol: 'kr', marketUrl: 'dba.dk', rtl: false },
-  { code: 'nl', label: 'Nederlands', flag: '🇳🇱', currency: 'EUR', currencySymbol: '€', marketUrl: 'marktplaats.nl', rtl: false },
-  { code: 'pl', label: 'Polski', flag: '🇵🇱', currency: 'PLN', currencySymbol: 'zł', marketUrl: 'olx.pl', rtl: false },
-  { code: 'ar', label: 'العربية', flag: '🇸🇦', currency: 'USD', currencySymbol: '$', marketUrl: 'ebay.com', rtl: true },
+  { code: 'no', label: 'Norsk',      flag: '🇳🇴', currency: 'NOK', marketUrl: 'finn.no' },
+  { code: 'en', label: 'English',    flag: '🇬🇧', currency: 'USD', marketUrl: 'ebay.com' },
+  { code: 'de', label: 'Deutsch',    flag: '🇩🇪', currency: 'EUR', marketUrl: 'ebay.de' },
+  { code: 'fr', label: 'Français',   flag: '🇫🇷', currency: 'EUR', marketUrl: 'leboncoin.fr' },
+  { code: 'es', label: 'Español',    flag: '🇪🇸', currency: 'EUR', marketUrl: 'wallapop.com' },
+  { code: 'sv', label: 'Svenska',    flag: '🇸🇪', currency: 'SEK', marketUrl: 'blocket.se' },
+  { code: 'da', label: 'Dansk',      flag: '🇩🇰', currency: 'DKK', marketUrl: 'dba.dk' },
+  { code: 'nl', label: 'Nederlands', flag: '🇳🇱', currency: 'EUR', marketUrl: 'marktplaats.nl' },
+  { code: 'pl', label: 'Polski',     flag: '🇵🇱', currency: 'PLN', marketUrl: 'olx.pl' },
+  { code: 'ar', label: 'العربية',    flag: '🇸🇦', currency: 'USD', marketUrl: 'ebay.com' },
 ]
 
 export const CURRENCIES = [
   { code: 'NOK', symbol: 'kr', label: 'NOK — Norwegian Krone' },
-  { code: 'USD', symbol: '$', label: 'USD — US Dollar' },
-  { code: 'EUR', symbol: '€', label: 'EUR — Euro' },
-  { code: 'GBP', symbol: '£', label: 'GBP — British Pound' },
+  { code: 'USD', symbol: '$',  label: 'USD — US Dollar' },
+  { code: 'EUR', symbol: '€',  label: 'EUR — Euro' },
+  { code: 'GBP', symbol: '£',  label: 'GBP — British Pound' },
   { code: 'SEK', symbol: 'kr', label: 'SEK — Swedish Krona' },
   { code: 'DKK', symbol: 'kr', label: 'DKK — Danish Krone' },
   { code: 'PLN', symbol: 'zł', label: 'PLN — Polish Złoty' },
   { code: 'CHF', symbol: 'Fr', label: 'CHF — Swiss Franc' },
 ]
 
-// Exchange rates to NOK (approximate)
-export const TO_NOK = { NOK:1, USD:10.5, EUR:11.5, GBP:13.5, SEK:0.95, DKK:1.55, PLN:2.6, CHF:12 }
-export const FROM_NOK = Object.fromEntries(Object.entries(TO_NOK).map(([k,v])=>[k,1/v]))
-
-export const convertFromNOK = (nokAmount, targetCurrency) => {
-  if (!nokAmount) return 0
-  return Math.round(nokAmount * (FROM_NOK[targetCurrency] || 1))
+const detectLang = () => {
+  try {
+    const stored = localStorage.getItem('hs_lang')
+    if (stored) return stored
+    const nav = navigator.language || ''
+    if (nav.startsWith('no')) return 'no'
+    if (nav.startsWith('sv')) return 'sv'
+    if (nav.startsWith('da')) return 'da'
+    if (nav.startsWith('de')) return 'de'
+    if (nav.startsWith('fr')) return 'fr'
+    if (nav.startsWith('es')) return 'es'
+    if (nav.startsWith('nl')) return 'nl'
+    if (nav.startsWith('pl')) return 'pl'
+    if (nav.startsWith('ar')) return 'ar'
+    return 'en'
+  } catch { return 'en' }
 }
 
-export const formatMoney = (amount, currency) => {
-  const c = CURRENCIES.find(x => x.code === currency) || CURRENCIES[0]
-  if (currency === 'NOK' || currency === 'SEK' || currency === 'DKK') {
-    return `${amount?.toLocaleString()} ${c.symbol}`
-  }
-  return `${c.symbol}${amount?.toLocaleString()}`
+export const getLang = detectLang
+export const getCurrency = () => {
+  try { return localStorage.getItem('hs_currency') || LANGUAGES.find(l => l.code === getLang())?.currency || 'USD' } catch { return 'USD' }
 }
-
-const T = {
-  no: {
-    welcome: 'Velkommen tilbake',
-    estates: 'Mine estates',
-    newEstate: '+ Ny estate',
-    estateNameLabel: 'Navn på estate *',
-    estateDescLabel: 'Beskrivelse (valgfri)',
-    createEstate: 'Opprett estate',
-    cancel: 'Avbryt',
-    joinEstate: 'Bli med i en estate',
-    joinDesc: 'Har du en invitasjonskode? Skriv den inn under.',
-    joinPlaceholder: 'Skriv invitasjonskode (f.eks. AB3X9K)',
-    join: 'Bli med',
-    noEstates: 'Ingen estates ennå. Opprett en eller bli med med en invitasjonskode.',
-    createFirst: 'Opprett første estate',
-    addItem: '+ Legg til gjenstand',
-    manage: '⚙️ Administrer',
-    totalItems: 'Gjenstander totalt',
-    myInterests: 'Mine interesser',
-    contested: 'Ettertraktede',
-    unwanted: 'Ingen vil ha',
-    assigned: 'Tildelt',
-    items: 'Gjenstander',
-    analytics: 'Analyse',
-    allCategories: 'Alle kategorier',
-    allItems: 'Alle gjenstander',
-    mine: 'Mine interesser',
-    contested2: 'Ettertraktet',
-    unwanted2: 'Ingen vil ha',
-    assigned2: 'Tildelt',
-    addPhoto: 'Ta bilde eller last opp',
-    analyzeAI: '🤖 Analyser med AI',
-    retake: 'Ta nytt bilde',
-    skipAI: 'Hopp over — fyll inn manuelt →',
-    analyzing: '🤖 Analyserer…',
-    addItemTitle: 'Legg til gjenstand',
-    addItemSubtitle: 'Ta et bilde — AI identifiserer og verdsetter automatisk',
-    photoStep: '📸 Bilde',
-    detailsStep: '📝 Detaljer',
-    valueStep: '💰 Verdi',
-    itemName: 'Navn på gjenstand *',
-    category: 'Kategori',
-    condition: 'Tilstand',
-    description: 'Beskrivelse',
-    excellent: 'Utmerket',
-    good: 'God',
-    fair: 'Middels',
-    poor: 'Dårlig',
-    back: '← Tilbake',
-    getEstimate: 'Få verdiestimat →',
-    estimating: '🔍 Estimerer…',
-    purchasePrice: 'Kjøpspris (NOK)',
-    yearBought: 'Kjøpsår',
-    yourEstimate: 'Ditt eget estimat (valgfri)',
-    addItemBtn: '✓ Legg til gjenstand',
-    saving: 'Lagrer…',
-    marketEstimate: 'AI Markedsestimat',
-    lowLabel: 'Lav',
-    highLabel: 'Høy',
-    likelyLabel: 'Mest sannsynlig',
-    marketRefs: 'Markedsreferanser',
-    insuranceModel: 'Forsikringens avskrivningsmodell',
-    verifyYourself: 'Sjekk selv',
-    finnLink: '🇳🇴 Finn.no →',
-    ebayLink: '🌍 eBay solgt →',
-    disclaimer: '⚠️ Estimater er kun veiledende — ikke profesjonell takst.',
-    registerInterest: 'Registrer interesse',
-    withdrawInterest: '✓ Du er interessert — klikk for å trekke tilbake',
-    whyWant: 'Hvorfor vil du ha denne gjenstanden?',
-    whyPlaceholder: 'f.eks. Jeg husker denne fra barndommen…',
-    sendComment: 'Send',
-    commentPlaceholder: 'Del en kommentar eller minne… (Enter for å sende)',
-    noComments: 'Ingen kommentarer ennå. Vær den første til å dele et minne!',
-    comments: 'Kommentarer',
-    interested: 'Interesserte',
-    assignItem: '✅ Tildel gjenstand',
-    whoGets: 'Hvem får denne gjenstanden?',
-    assigned3: 'Tildelt',
-    deleteItem: 'Slett gjenstand…',
-    confirmDelete: 'Kan ikke angres.',
-    delete: 'Slett',
-    backToEstate: '← Tilbake til estate',
-    upgrade: 'Oppgrader',
-    logout: '🚪 Logg ut',
-    myProfile: '⚙️ Min profil',
-    founderDash: '🔭 Founder dashboard',
-    loginTitle: 'Logg inn',
-    createAccount: 'Opprett konto',
-    email: 'E-post',
-    password: 'Passord',
-    yourName: 'Ditt navn',
-    newHere: 'Ny her?',
-    haveAccount: 'Har du konto?',
-    welcomeMsg: 'Velkommen! 👋',
-    welcomeSubMsg: 'Sett opp profilen din så familiemedlemmer vet hvem du er.',
-    displayName: 'Visningsnavn',
-    chooseColor: 'Velg din farge',
-    getStarted: 'Kom i gang →',
-    inviteLink: 'Invitasjonslenke',
-    inviteLinkDesc: 'Send denne lenken til familiemedlemmer — de klikker og er automatisk med.',
-    copyLink: 'Kopier lenke',
-    copied: '✓ Kopiert!',
-    members: 'Medlemmer',
-    branding: 'Merkevarebygging',
-    brandColor: 'Merkefarge',
-    logo: 'Logo',
-    saveBranding: 'Lagre merkevare',
-    categories: 'Kategorier',
-    manageCategories: 'Administrer kategorier →',
-    taskChecklist: '📋 Oppgaveliste',
-    taskChecklistDesc: 'Steg-for-steg-veiledning',
-    docVault: '🔒 Dokumenthvelv',
-    docVaultDesc: 'Testamenter, skjøter, ID',
-    heirs: '👨‍👩‍👧 Arvinger og fordeling',
-    heirsDesc: 'Rettferdig fordelingskalkulator',
-    goodwill: '⭐ Goodwill og arbeid',
-    goodwillDesc: 'Oppgaver, rettferdighet, karma',
-    noItemsYet: 'Ingen gjenstander ennå.',
-    addFirstItem: 'Legg til første gjenstand',
-    freeLimitReached: '🔒 Gratis plan — grense nådd',
-    freeLimitDesc: 'Oppgrader for ubegrenset antall gjenstander',
-    marketplaceSearch: 'Søk på Finn.no',
-  },
-  en: {
-    welcome: 'Welcome back',
-    estates: 'My estates',
-    newEstate: '+ New estate',
-    estateNameLabel: 'Estate name *',
-    estateDescLabel: 'Description (optional)',
-    createEstate: 'Create estate',
-    cancel: 'Cancel',
-    joinEstate: 'Join an estate',
-    joinDesc: 'Got an invite code? Enter it below to join the family.',
-    joinPlaceholder: 'Enter invite code (e.g. AB3X9K)',
-    join: 'Join',
-    noEstates: 'No estates yet. Create one or join with an invite code.',
-    createFirst: 'Create first estate',
-    addItem: '+ Add item',
-    manage: '⚙️ Manage',
-    totalItems: 'Total items',
-    myInterests: 'My interests',
-    contested: 'Contested',
-    unwanted: 'Unwanted',
-    assigned: 'Assigned',
-    items: 'Items',
-    analytics: 'Analytics',
-    allCategories: 'All categories',
-    allItems: 'All items',
-    mine: 'My interests',
-    contested2: 'Contested',
-    unwanted2: 'Unwanted',
-    assigned2: 'Assigned',
-    addPhoto: 'Take or upload photo',
-    analyzeAI: '🤖 Analyze with AI',
-    retake: 'Retake',
-    skipAI: 'Skip — fill in manually →',
-    analyzing: '🤖 Analyzing…',
-    addItemTitle: 'Add item',
-    addItemSubtitle: 'Take a photo — AI identifies and values automatically',
-    photoStep: '📸 Photo',
-    detailsStep: '📝 Details',
-    valueStep: '💰 Value',
-    itemName: 'Item name *',
-    category: 'Category',
-    condition: 'Condition',
-    description: 'Description',
-    excellent: 'Excellent',
-    good: 'Good',
-    fair: 'Fair',
-    poor: 'Poor',
-    back: '← Back',
-    getEstimate: 'Get value estimate →',
-    estimating: '🔍 Estimating…',
-    purchasePrice: 'Purchase price',
-    yearBought: 'Year bought',
-    yourEstimate: 'Your own estimate (optional)',
-    addItemBtn: '✓ Add item',
-    saving: 'Saving…',
-    marketEstimate: 'AI Market Estimate',
-    lowLabel: 'Low',
-    highLabel: 'High',
-    likelyLabel: 'Most likely',
-    marketRefs: 'Market references',
-    insuranceModel: 'Insurance depreciation model',
-    verifyYourself: 'Verify yourself',
-    finnLink: '🌍 eBay sold →',
-    ebayLink: '🌍 eBay sold →',
-    disclaimer: '⚠️ Estimates are for guidance only — not professional appraisal.',
-    registerInterest: 'Register interest',
-    withdrawInterest: '✓ You\'re interested — click to withdraw',
-    whyWant: 'Why do you want this item?',
-    whyPlaceholder: 'e.g. I remember this from childhood…',
-    sendComment: 'Send',
-    commentPlaceholder: 'Share a memory or comment… (Enter to send)',
-    noComments: 'No comments yet. Be the first to share a memory!',
-    comments: 'Comments',
-    interested: 'Interested',
-    assignItem: '✅ Assign item',
-    whoGets: 'Who gets this item?',
-    assigned3: 'Assigned',
-    deleteItem: 'Delete item…',
-    confirmDelete: 'Cannot be undone.',
-    delete: 'Delete',
-    backToEstate: '← Back to estate',
-    upgrade: 'Upgrade',
-    logout: '🚪 Log out',
-    myProfile: '⚙️ My profile',
-    founderDash: '🔭 Founder dashboard',
-    loginTitle: 'Log in',
-    createAccount: 'Create account',
-    email: 'Email',
-    password: 'Password',
-    yourName: 'Your name',
-    newHere: 'New here?',
-    haveAccount: 'Have an account?',
-    welcomeMsg: 'Welcome! 👋',
-    welcomeSubMsg: 'Set up your profile so family members know who you are.',
-    displayName: 'Display name',
-    chooseColor: 'Choose your color',
-    getStarted: 'Get started →',
-    inviteLink: 'Invite link',
-    inviteLinkDesc: 'Send this to family members — they click and are automatically added.',
-    copyLink: 'Copy link',
-    copied: '✓ Copied!',
-    members: 'Members',
-    branding: 'Branding',
-    brandColor: 'Brand color',
-    logo: 'Logo',
-    saveBranding: 'Save branding',
-    categories: 'Categories',
-    manageCategories: 'Manage categories →',
-    taskChecklist: '📋 Task checklist',
-    taskChecklistDesc: 'Step-by-step guide',
-    docVault: '🔒 Document vault',
-    docVaultDesc: 'Wills, deeds, IDs',
-    heirs: '👨‍👩‍👧 Heirs & distribution',
-    heirsDesc: 'Fair split calculator',
-    goodwill: '⭐ Goodwill & work',
-    goodwillDesc: 'Tasks, fairness, karma',
-    noItemsYet: 'No items yet.',
-    addFirstItem: 'Add first item',
-    freeLimitReached: '🔒 Free plan limit reached',
-    freeLimitDesc: 'Upgrade to add unlimited items',
-    marketplaceSearch: 'Search on eBay',
-  },
-}
-
-// Generate translations for other languages based on English
-// (In production you'd have full translations — this covers the UI with auto-detect)
-const LANG_NAMES = { de:'Deutsch', fr:'Français', es:'Español', sv:'Svenska', da:'Dansk', nl:'Nederlands', pl:'Polski', ar:'العربية' }
-
-// For non-EN/NO languages, fall back to English with language marker
-Object.keys(LANG_NAMES).forEach(code => { T[code] = { ...T.en } })
-
-// Swedish/Danish close to Norwegian — override key strings
-T.sv = { ...T.en, welcome:'Välkommen tillbaka', newEstate:'+ Ny bodelning', estates:'Mina dödsbon', addItem:'+ Lägg till föremål', manage:'⚙️ Hantera', totalItems:'Föremål totalt', myInterests:'Mina intressen', items:'Föremål', marketplaceSearch:'Sök på Blocket.se', finnLink:'🇸🇪 Blocket.se →' }
-T.da = { ...T.en, welcome:'Velkommen tilbage', newEstate:'+ Nyt bo', estates:'Mine boer', addItem:'+ Tilføj genstand', manage:'⚙️ Administrer', totalItems:'Genstande i alt', myInterests:'Mine interesser', items:'Genstande', marketplaceSearch:'Søg på DBA.dk', finnLink:'🇩🇰 DBA.dk →' }
-T.de = { ...T.en, welcome:'Willkommen zurück', newEstate:'+ Neuer Nachlass', estates:'Meine Nachlässe', addItem:'+ Gegenstand hinzufügen', manage:'⚙️ Verwalten', totalItems:'Gegenstände gesamt', myInterests:'Meine Interessen', items:'Gegenstände', marketplaceSearch:'Auf eBay.de suchen', finnLink:'🇩🇪 eBay.de →' }
-T.fr = { ...T.en, welcome:'Bienvenue', newEstate:'+ Nouvelle succession', estates:'Mes successions', addItem:'+ Ajouter un objet', manage:'⚙️ Gérer', totalItems:'Total objets', myInterests:'Mes intérêts', items:'Objets', marketplaceSearch:'Rechercher sur Leboncoin', finnLink:'🇫🇷 Leboncoin →' }
-T.es = { ...T.en, welcome:'Bienvenido', newEstate:'+ Nueva herencia', estates:'Mis herencias', addItem:'+ Añadir objeto', manage:'⚙️ Gestionar', totalItems:'Objetos totales', myInterests:'Mis intereses', items:'Objetos', marketplaceSearch:'Buscar en Wallapop', finnLink:'🇪🇸 Wallapop →' }
-T.nl = { ...T.en, welcome:'Welkom terug', newEstate:'+ Nieuwe nalatenschap', estates:'Mijn nalatenschappen', addItem:'+ Item toevoegen', manage:'⚙️ Beheren', totalItems:'Totaal items', items:'Items', marketplaceSearch:'Zoeken op Marktplaats', finnLink:'🇳🇱 Marktplaats →' }
-T.pl = { ...T.en, welcome:'Witaj ponownie', newEstate:'+ Nowy majątek', estates:'Moje majątki', addItem:'+ Dodaj przedmiot', manage:'⚙️ Zarządzaj', totalItems:'Łącznie przedmiotów', items:'Przedmioty', marketplaceSearch:'Szukaj na OLX', finnLink:'🇵🇱 OLX.pl →' }
-T.ar = { ...T.en, welcome:'مرحباً بعودتك', newEstate:'+ عقار جديد', estates:'عقاراتي', addItem:'+ إضافة عنصر', manage:'⚙️ إدارة', totalItems:'إجمالي العناصر', items:'العناصر', marketplaceSearch:'البحث على eBay' }
-
-export const t = (lang, key) => T[lang]?.[key] ?? T.en[key] ?? key
-
-export const getLang = () => localStorage.getItem('hs_lang') || (navigator.language.startsWith('no') ? 'no' : navigator.language.startsWith('sv') ? 'sv' : navigator.language.startsWith('da') ? 'da' : navigator.language.startsWith('de') ? 'de' : navigator.language.startsWith('fr') ? 'fr' : navigator.language.startsWith('es') ? 'es' : navigator.language.startsWith('nl') ? 'nl' : navigator.language.startsWith('pl') ? 'pl' : navigator.language.startsWith('ar') ? 'ar' : 'en')
-export const setLang = (code) => { localStorage.setItem('hs_lang', code); window.location.reload() }
-
-export const getCurrency = () => localStorage.getItem('hs_currency') || LANGUAGES.find(l => l.code === getLang())?.currency || 'USD'
-export const setCurrency = (code) => { localStorage.setItem('hs_currency', code); window.location.reload() }
