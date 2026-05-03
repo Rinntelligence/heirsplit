@@ -81,7 +81,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
       <button onClick={()=>navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>← Back to estate</button>
 
       <div style={{ background:'#f0ebe4', borderRadius:'14px', height:'260px', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'24px', overflow:'hidden' }}>
-        {item.image_url ? <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : <span style={{ fontSize:'90px' }}>{cat.emoji}</span>}
+        {item.image_url ? <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'contain', background:'#f0ebe4' }} /> : <span style={{ fontSize:'90px' }}>{cat.emoji}</span>}
       </div>
 
       <div style={{ background:'#fff', border:'1px solid #e8e0d6', borderRadius:'14px', padding:'32px', marginBottom:'20px' }}>

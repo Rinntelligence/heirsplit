@@ -252,7 +252,7 @@ function ItemCard({ item, userId, onClick }) {
     onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 28px rgba(0,0,0,0.09)'}}
     onMouseLeave={e=>{e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow='none'}}>
       <div style={{ height:'140px', background:'#f0ebe4', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', position:'relative' }}>
-        {item.image_url ? <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : <span style={{ fontSize:'48px' }}>{cat.emoji}</span>}
+        {item.image_url ? <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'contain', background:'#f0ebe4' }} /> : <span style={{ fontSize:'48px' }}>{cat.emoji}</span>}
         {hot && !isAssigned && <span style={{ position:'absolute', top:'8px', right:'8px', background:'#c4855a', color:'#fff', fontSize:'10px', padding:'2px 7px', borderRadius:'20px' }}>🔥 Contested</span>}
         {isAssigned && <span style={{ position:'absolute', top:'8px', right:'8px', background:'#7aaa7a', color:'#fff', fontSize:'10px', padding:'2px 7px', borderRadius:'20px' }}>✅ Assigned</span>}
       </div>
