@@ -21,7 +21,9 @@ export default function LanguageSwitcher() {
       fontSize: '14px', fontFamily: 'DM Sans, sans-serif', color: '#1a1410',
       display: 'flex', alignItems: 'center', gap: '8px',
     }}>
-      {lang === 'en' ? <><span>🇳🇴</span><span>Norsk</span></> : <><span>🇬🇧</span><span>English</span></>}
+      {lang === 'en'
+        ? <><span>🇳🇴</span><span>Norsk</span></>
+        : <><span>🇬🇧</span><span>English</span></>}
     </button>
   )
 }
