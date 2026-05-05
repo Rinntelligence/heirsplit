@@ -14,72 +14,10 @@
       body { background: #f8f5f0; font-family: 'DM Sans', sans-serif; color: #1a1410; -webkit-font-smoothing: antialiased; }
       ::-webkit-scrollbar { width: 5px; }
       ::-webkit-scrollbar-thumb { background: #d4c9b8; border-radius: 3px; }
-
-      /* Hide Google's ugly top bar */
-      .goog-te-banner-frame { display: none !important; }
-      .skiptranslate { display: none !important; }
-      body { top: 0 !important; }
-
-      /* Style the translate widget */
-      #hs-translate-btn {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        z-index: 9999;
-        background: #fff;
-        border: 1px solid #e0d8d0;
-        border-radius: 20px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-        padding: 7px 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 13px;
-        color: #1a1410;
-      }
-
-      /* Make the Google select look clean */
-      #hs-translate-btn select,
-      #hs-translate-btn .goog-te-combo {
-        border: none !important;
-        outline: none !important;
-        background: transparent !important;
-        font-family: 'DM Sans', sans-serif !important;
-        font-size: 13px !important;
-        color: #1a1410 !important;
-        cursor: pointer !important;
-        padding: 0 !important;
-        max-width: 140px;
-      }
-
-      #google_translate_element {
-        display: inline-block;
-      }
     </style>
   </head>
   <body>
     <div id="root"></div>
-
-    <!-- Google Translate in bottom left corner -->
-    <div id="hs-translate-btn">
-      <span>🌍</span>
-      <div id="google_translate_element"></div>
-    </div>
-
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false,
-          multilanguagePage: true
-        }, 'google_translate_element');
-      }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
