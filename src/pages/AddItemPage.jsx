@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { t } from '../lib/lang'
 import { getCategories, createItem, uploadImage, supabase } from '../lib/supabase'
 
 const DEPRECIATION_RATES = {
@@ -237,7 +238,7 @@ Respond ONLY with this JSON (no other text):
 
       {/* Steps */}
       <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
-        {[['photo','📸 Photo'],['details','📝 Details'],['value','💰 Value']].map(([s,l]) => (
+        {[['photo',t('photoStep')],['details',t('detailsStep')],['value',t('valueStep')]].map(([s,l]) => (
           <div key={s} onClick={() => setStep(s)} style={{
             flex: 1, padding: '9px', textAlign: 'center', borderRadius: '8px', fontSize: '13px',
             background: step === s ? '#1a1410' : '#f0ebe4',
@@ -255,7 +256,7 @@ Respond ONLY with this JSON (no other text):
             alignItems: 'center', justifyContent: 'center', cursor: 'pointer', overflow: 'hidden',
           }}>
             {imagePreview
-              ? <img src={imagePreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ? <img src={imagePreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#f0ebe4' }} />
               : <><span style={{ fontSize: '44px', marginBottom: '10px' }}>📸</span>
                  <span style={{ fontSize: '15px', color: '#6b5c4c' }}>Tap to take or upload photo</span>
                  <span style={{ fontSize: '12px', color: '#a89080', marginTop: '4px' }}>AI identifies item and estimates value</span></>}
@@ -299,7 +300,7 @@ Respond ONLY with this JSON (no other text):
 
           {imagePreview && (
             <div style={{ height: '90px', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
-              <img src={imagePreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={imagePreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#f0ebe4' }} />
               <button onClick={() => setStep('photo')} style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>Change</button>
             </div>
           )}
@@ -345,6 +346,16 @@ Respond ONLY with this JSON (no other text):
               cursor: form.title.trim() ? 'pointer' : 'not-allowed', fontSize: '14px', fontFamily: 'DM Sans, sans-serif',
             }}>Get value estimate →</button>
           </div>
+          {form.title.trim() && (
+            <button onClick={save} disabled={saving} style={{
+              width: '100%', padding: '11px', background: 'none',
+              border: '1px solid #e0d8d0', borderRadius: '8px',
+              cursor: 'pointer', color: '#8c7b6b', fontSize: '13px',
+              fontFamily: 'DM Sans, sans-serif', marginTop: '2px',
+            }}>
+              {saving ? t('saving') : t('saveWithout')}
+            </button>
+          )}
         </div>
       )}
 
@@ -466,7 +477,7 @@ Respond ONLY with this JSON (no other text):
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={() => setStep('details')} style={{ flex: 1, padding: '12px', background: 'none', border: '1px solid #e0d8d0', borderRadius: '8px', cursor: 'pointer', color: '#6b5c4c', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>← Back</button>
             <button onClick={save} disabled={saving} style={{ flex: 2, padding: '12px', background: '#1a1410', color: '#f5f0eb', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>
-              {saving ? 'Saving…' : '✓ Add item'}
+              {saving ? t('saving') : t('addItemBtn')}
             </button>
           </div>
         </div>

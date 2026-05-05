@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEstate, getItems, getCategories, supabase } from '../lib/supabase'
 import { usePlan } from '../hooks/usePlan'
+import { t } from '../lib/lang'
 import { Avatar, Badge } from '../components/UI'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 
@@ -67,10 +68,10 @@ export default function EstatePage({ session, profile, onToast }) {
   })).filter(x => x.count > 0).sort((a,b) => b.count - a.count)
 
   const pieData = [
-    { name: 'Assigned', value: assigned },
-    { name: 'Contested', value: contested },
+    { name: t('assigned'), value: assigned },
+    { name: t('contested'), value: contested },
     { name: 'Wanted', value: items.filter(i => i.interests?.length === 1).length },
-    { name: 'Unwanted', value: unwanted },
+    { name: t('unwanted'), value: unwanted },
   ].filter(d => d.value > 0)
 
   const canAddItems = items.length < limit('items')
@@ -102,11 +103,11 @@ export default function EstatePage({ session, profile, onToast }) {
       {/* Stats */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(130px,1fr))', gap:'10px', marginBottom:'28px' }}>
         {[
-          { v:items.length, l:'Total items', emoji:'📦' },
-          { v:myCount, l:'My interests', emoji:'❤️' },
-          { v:contested, l:'Contested', emoji:'🔥', warn:contested>0, clickStatus:'contested' },
-          { v:unwanted, l:'Unwanted', emoji:'😔', clickStatus:'unwanted' },
-          { v:assigned, l:'Assigned', emoji:'✅', clickStatus:'assigned' },
+          { v:items.length, l:t('totalItems'), emoji:'📦' },
+          { v:myCount, l:t('myInterests'), emoji:'❤️' },
+          { v:contested, l:t('contested'), emoji:'🔥', warn:contested>0, clickStatus:'contested' },
+          { v:unwanted, l:t('unwanted'), emoji:'😔', clickStatus:'unwanted' },
+          { v:assigned, l:t('assigned'), emoji:'✅', clickStatus:'assigned' },
         ].map(s => (
           <div key={s.l} onClick={s.clickStatus ? ()=>setFilterStatus(filterStatus===s.clickStatus?'all':s.clickStatus) : undefined} style={{
             background: filterStatus===s.clickStatus?'#fef3e8':'#fff',
@@ -138,7 +139,7 @@ export default function EstatePage({ session, profile, onToast }) {
 
       {/* Tabs */}
       <div style={{ display:'flex', gap:'4px', borderBottom:'1px solid #e8e0d6', marginBottom:'24px' }}>
-        {[['items','Items'],['analytics','Analytics']].map(([t,l]) => (
+        {[['items',t('items')],['analytics',t('analytics')]].map(([t,l]) => (
           <button key={t} onClick={()=>setTab(t)} style={{
             padding:'10px 18px', border:'none', background:'none', cursor:'pointer',
             fontSize:'14px', fontFamily:'DM Sans, sans-serif',

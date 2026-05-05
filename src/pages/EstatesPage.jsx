@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getMyEstates, createEstate, supabase } from '../lib/supabase'
 import { usePlan } from '../hooks/usePlan'
+import { t } from '../lib/lang'
 import { Card, Button, Avatar } from '../components/UI'
 
 function genCode() { return Math.random().toString(36).substring(2,8).toUpperCase() }
@@ -86,7 +87,7 @@ export default function EstatesPage({ session, profile, onToast }) {
           <div style={{ display:'flex', gap:'10px' }}>
             <button onClick={()=>setShowNew(false)} style={{ flex:1, padding:'11px', background:'none', border:'1px solid #e0d8d0', borderRadius:'8px', cursor:'pointer', color:'#6b5c4c', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>Cancel</button>
             <button onClick={create} disabled={!newName.trim()||creating} style={{ flex:2, padding:'11px', background:newName.trim()?'#1a1410':'#c0b8b0', color:'#f5f0eb', border:'none', borderRadius:'8px', cursor:newName.trim()?'pointer':'not-allowed', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>
-              {creating?'Creating…':'Create estate'}
+              {creating?'Creating…':t('createEstate')}
             </button>
           </div>
         </Card>
