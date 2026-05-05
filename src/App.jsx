@@ -19,6 +19,7 @@ import { JoinPage, PricingPage, CategoriesPage } from './pages/OtherPages'
 import TopBar from './components/TopBar'
 import Toast from './components/Toast'
 import LanguageSwitcher from './components/LanguageSwitcher'
+import FeedbackWidget from './components/FeedbackWidget'
 
 export default function App() {
   const [session, setSession] = useState(undefined)
@@ -67,6 +68,7 @@ export default function App() {
         <TopBar profile={profile} session={session} onToast={showToast} />
         {toast && <Toast msg={toast.msg} type={toast.type} />}
         <LanguageSwitcher />
+        <FeedbackWidget session={session} />
         <Routes>
           <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => { setProfile(p); navigate('/') }} onToast={showToast} />} />

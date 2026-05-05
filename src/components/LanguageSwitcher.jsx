@@ -1,54 +1,90 @@
 import { useState } from 'react'
-import { CURRENCIES, getLang, getCurrency } from '../lib/i18n'
-
-const LANGS = [
-  { code:'en', flag:'🇬🇧', label:'English' },
-  { code:'no', flag:'🇳🇴', label:'Norsk' },
-  { code:'de', flag:'🇩🇪', label:'Deutsch' },
-  { code:'fr', flag:'🇫🇷', label:'Français' },
-  { code:'es', flag:'🇪🇸', label:'Español' },
-  { code:'sv', flag:'🇸🇪', label:'Svenska' },
-  { code:'da', flag:'🇩🇰', label:'Dansk' },
-  { code:'nl', flag:'🇳🇱', label:'Nederlands' },
-  { code:'pl', flag:'🇵🇱', label:'Polski' },
-  { code:'ar', flag:'🇸🇦', label:'العربية' },
-]
+import { LANGUAGES, CURRENCIES, getLang, setLang, getCurrency, setCurrency } from '../lib/i18n'
 
 export default function LanguageSwitcher() {
-  const [lang, setLang] = useState(getLang() || 'en')
-  const [currency, setCurrency] = useState(getCurrency() || 'USD')
-
-  const handleLang = (e) => {
-    const code = e.target.value
-    setLang(code)
-    try { localStorage.setItem('hs_lang', code) } catch {}
-    const combo = document.querySelector('.goog-te-combo')
-    if (combo) { combo.value = code; combo.dispatchEvent(new Event('change')) }
-    else window.location.reload()
-  }
-
-  const handleCurrency = (e) => {
-    const code = e.target.value
-    setCurrency(code)
-    try { localStorage.setItem('hs_currency', code) } catch {}
-  }
-
-  const currentFlag = LANGS.find(l => l.code === lang)?.flag || '🌍'
+  const [open, setOpen] = useState(false)
+  const [tab, setTab] = useState('lang')
+  const currentLang = LANGUAGES.find(l => l.code === getLang()) || LANGUAGES[1]
+  const currentCurrency = getCurrency()
 
   return (
-    <div style={{ position:'fixed', bottom:'20px', left:'20px', zIndex:9999, display:'flex', gap:'8px' }}>
-      <div style={{ background:'#fff', border:'1px solid #e0d8d0', borderRadius:'20px', boxShadow:'0 2px 12px rgba(0,0,0,0.10)', padding:'7px 14px', display:'flex', alignItems:'center', gap:'6px' }}>
-        <span>{currentFlag}</span>
-        <select value={lang} onChange={handleLang} style={{ border:'none', outline:'none', background:'transparent', fontSize:'13px', color:'#1a1410', cursor:'pointer', fontFamily:'DM Sans, sans-serif' }}>
-          {LANGS.map(l => <option key={l.code} value={l.code}>{l.flag} {l.label}</option>)}
-        </select>
-      </div>
-      <div style={{ background:'#fff', border:'1px solid #e0d8d0', borderRadius:'20px', boxShadow:'0 2px 12px rgba(0,0,0,0.10)', padding:'7px 14px', display:'flex', alignItems:'center', gap:'6px' }}>
-        <span style={{ fontSize:'13px', color:'#c4855a' }}>💱</span>
-        <select value={currency} onChange={handleCurrency} style={{ border:'none', outline:'none', background:'transparent', fontSize:'13px', color:'#1a1410', cursor:'pointer', fontFamily:'DM Sans, sans-serif' }}>
-          {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.symbol} {c.code}</option>)}
-        </select>
-      </div>
+    <div style={{ position: 'fixed', bottom: '20px', left: '20px', zIndex: 500 }}>
+      {open && (
+        <div style={{
+          position: 'absolute', bottom: '52px', left: 0,
+          background: '#fff', border: '1px solid #e8e0d6',
+          borderRadius: '14px', boxShadow: '0 8px 32px rgba(0,0,0,0.16)',
+          width: '260px', overflow: 'hidden',
+        }}>
+          {/* Tabs */}
+          <div style={{ display: 'flex', borderBottom: '1px solid #f0ebe4' }}>
+            {[['lang','🌍 Language'],['currency','💱 Currency']].map(([t,l]) => (
+              <button key={t} onClick={() => setTab(t)} style={{
+                flex: 1, padding: '10px', border: 'none', cursor: 'pointer',
+                background: tab === t ? '#f5f0eb' : '#fff',
+                fontSize: '13px', color: '#1a1410', fontFamily: 'DM Sans, sans-serif',
+                borderBottom: tab === t ? '2px solid #1a1410' : '2px solid transparent',
+              }}>{l}</button>
+            ))}
+          </div>
+
+          {/* Language list */}
+          {tab === 'lang' && (
+            <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
+              {LANGUAGES.map(lang => (
+                <button key={lang.code} onClick={() => setLang(lang.code)} style={{
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  width: '100%', padding: '10px 16px', border: 'none',
+                  background: currentLang.code === lang.code ? '#f0ebe4' : '#fff',
+                  cursor: 'pointer', textAlign: 'left', fontFamily: 'DM Sans, sans-serif',
+                  borderBottom: '1px solid #f8f5f2',
+                }}>
+                  <span style={{ fontSize: '20px' }}>{lang.flag}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '14px', color: '#1a1410' }}>{lang.label}</div>
+                    <div style={{ fontSize: '11px', color: '#a89080' }}>{lang.currency} · {lang.marketUrl}</div>
+                  </div>
+                  {currentLang.code === lang.code && <span style={{ color: '#7aaa7a', fontSize: '16px' }}>✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Currency list */}
+          {tab === 'currency' && (
+            <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
+              {CURRENCIES.map(cur => (
+                <button key={cur.code} onClick={() => setCurrency(cur.code)} style={{
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  width: '100%', padding: '10px 16px', border: 'none',
+                  background: currentCurrency === cur.code ? '#f0ebe4' : '#fff',
+                  cursor: 'pointer', textAlign: 'left', fontFamily: 'DM Sans, sans-serif',
+                  borderBottom: '1px solid #f8f5f2',
+                }}>
+                  <span style={{ fontSize: '18px', fontWeight: '600', color: '#c4855a', minWidth: '24px' }}>{cur.symbol}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '14px', color: '#1a1410' }}>{cur.label}</div>
+                  </div>
+                  {currentCurrency === cur.code && <span style={{ color: '#7aaa7a', fontSize: '16px' }}>✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Trigger button */}
+      <button onClick={() => setOpen(!open)} style={{
+        display: 'flex', alignItems: 'center', gap: '6px',
+        padding: '8px 14px', background: '#fff',
+        border: '1px solid #e0d8d0', borderRadius: '20px',
+        cursor: 'pointer', boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+        fontSize: '14px', fontFamily: 'DM Sans, sans-serif', color: '#1a1410',
+      }}>
+        <span>{currentLang.flag}</span>
+        <span style={{ fontSize: '12px', color: '#8c7b6b' }}>{currentLang.code.toUpperCase()}</span>
+        <span style={{ fontSize: '11px', color: '#c4855a', fontWeight: '500' }}>{currentCurrency}</span>
+      </button>
     </div>
   )
 }
