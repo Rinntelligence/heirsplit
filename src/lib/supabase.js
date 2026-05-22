@@ -34,18 +34,46 @@ export const getEstateMembers = (estate_id) =>
     .select('*, profiles(display_name, avatar_color, email)')
     .eq('estate_id', estate_id)
 
-// FIXED: removed problematic assigned_to_profile join
-export const getItems = (estate_id) =>
-  supabase.from('items')
-    .select('*, categories(label, emoji), interests(*, profiles(display_name, avatar_color))')
+// SIMPLE getItems - no complex joins that can fail
+export const getItems = async (estate_id) => {
+  const { data: items, error } = await supabase
+    .from('items')
+    .select('*, categories(label, emoji)')
     .eq('estate_id', estate_id)
     .order('created_at', { ascending: false })
 
-// FIXED: removed problematic assigned_to_profile join  
-export const getItem = (id) =>
-  supabase.from('items')
-    .select('*, categories(label, emoji), interests(*, profiles(display_name, avatar_color))')
+  if (error) return { data: [], error }
+
+  // Fetch interests separately to avoid FK issues
+  const { data: interests } = await supabase
+    .from('interests')
+    .select('*, profiles(display_name, avatar_color)')
+    .in('item_id', items.map(i => i.id))
+
+  // Attach interests to items
+  const itemsWithInterests = items.map(item => ({
+    ...item,
+    interests: (interests || []).filter(x => x.item_id === item.id)
+  }))
+
+  return { data: itemsWithInterests, error: null }
+}
+
+export const getItem = async (id) => {
+  const { data: item, error } = await supabase
+    .from('items')
+    .select('*, categories(label, emoji)')
     .eq('id', id).single()
+
+  if (error) return { data: null, error }
+
+  const { data: interests } = await supabase
+    .from('interests')
+    .select('*, profiles(display_name, avatar_color)')
+    .eq('item_id', id)
+
+  return { data: { ...item, interests: interests || [] }, error: null }
+}
 
 export const createItem = async (data) => {
   const safe = {
@@ -58,18 +86,11 @@ export const createItem = async (data) => {
     added_by_name: data.added_by_name || null,
     status: data.status || 'active',
     estimated_value: data.estimated_value || null,
+    condition: data.condition || 'good',
+    purchase_price: data.purchase_price || null,
+    purchase_year: data.purchase_year || null,
   }
-  // Add optional columns if they exist
-  if (data.condition) safe.condition = data.condition
-  if (data.purchase_price) safe.purchase_price = data.purchase_price
-  if (data.purchase_year) safe.purchase_year = data.purchase_year
-
-  const result = await supabase.from('items').insert(safe).select().single()
-  if (result.error?.message?.includes('column')) {
-    delete safe.condition; delete safe.purchase_price; delete safe.purchase_year
-    return supabase.from('items').insert(safe).select().single()
-  }
-  return result
+  return supabase.from('items').insert(safe).select().single()
 }
 
 export const updateItem = (id, data) =>
@@ -127,8 +148,7 @@ export const uploadLogo = async (file, estateId) => {
 }
 
 export const getAllEstates = () =>
-  supabase.from('estates')
-    .select('*, profiles!estates_owner_id_fkey(display_name, email)')
+  supabase.from('estates').select('*, profiles!estates_owner_id_fkey(display_name, email)')
     .order('created_at', { ascending: false })
 
 export const getAllProfiles = () =>
