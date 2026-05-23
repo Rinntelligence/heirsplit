@@ -15,6 +15,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
   const [commentText, setCommentText] = useState('')
   const [submittingComment, setSubmittingComment] = useState(false)
   const [showAssign, setShowAssign] = useState(false)
+  const [lightboxUrl, setLightboxUrl] = useState(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false)
   const commentsEndRef = useRef(null)
@@ -99,18 +100,35 @@ export default function ItemDetailPage({ session, profile, onToast }) {
         </button>
       </div>
 
+      {/* Lightbox */}
+      {lightboxUrl && (
+        <div onClick={() => setLightboxUrl(null)} style={{
+          position:'fixed', inset:0, background:'rgba(0,0,0,0.92)',
+          zIndex:9999, display:'flex', alignItems:'center', justifyContent:'center',
+          padding:'20px', cursor:'zoom-out',
+        }}>
+          <img src={lightboxUrl} alt="" style={{ maxWidth:'100%', maxHeight:'100%', objectFit:'contain', borderRadius:'8px' }} />
+          <button onClick={() => setLightboxUrl(null)} style={{
+            position:'fixed', top:'16px', right:'16px',
+            background:'rgba(255,255,255,0.2)', border:'none', color:'#fff',
+            borderRadius:'50%', width:'40px', height:'40px',
+            fontSize:'20px', cursor:'pointer',
+          }}>×</button>
+        </div>
+      )}
+
       {/* Image gallery */}
       {item.image_url ? (
         <div style={{ marginBottom:'24px' }}>
-          {/* Main image */}
-          <div style={{ background:'#f0ebe4', borderRadius:'14px', height:'260px', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', marginBottom:'8px' }}>
+          {/* Main image - clickable */}
+          <div onClick={() => setLightboxUrl(item.image_url)} style={{ background:'#f0ebe4', borderRadius:'14px', height:'260px', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', marginBottom:'8px', cursor:'zoom-in' }}>
             <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
           </div>
-          {/* Extra images */}
+          {/* Extra images - clickable */}
           {item.extra_images?.length > 0 && (
             <div style={{ display:'flex', gap:'8px', overflowX:'auto' }}>
               {item.extra_images.map((url, i) => (
-                <div key={i} style={{ width:'80px', height:'80px', borderRadius:'8px', overflow:'hidden', flexShrink:0, background:'#f0ebe4' }}>
+                <div key={i} onClick={() => setLightboxUrl(url)} style={{ width:'80px', height:'80px', borderRadius:'8px', overflow:'hidden', flexShrink:0, background:'#f0ebe4', cursor:'zoom-in' }}>
                   <img src={url} alt={`${item.title} ${i+2}`} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
                 </div>
               ))}
