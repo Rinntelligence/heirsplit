@@ -11,6 +11,7 @@ import ItemDetailPage from './pages/ItemDetailPage'
 import AddItemPage from './pages/AddItemPage'
 import AdminPage from './pages/AdminPage'
 import EditItemPage from './pages/EditItemPage'
+import EditItemPage from './pages/EditItemPage'
 import FounderPage from './pages/FounderPage'
 import TasksPage from './pages/TasksPage'
 import DocumentVaultPage from './pages/DocumentVaultPage'
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => { setProfile(p); navigate('/') }} onToast={showToast} />} />
           <Route path="/estate/:id" element={<EstatePage session={session} profile={profile} onToast={showToast} />} />
+          <Route path="/estate/:id/item/:itemId/edit" element={<EditItemPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/item/:itemId/edit" element={<EditItemPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/item/:itemId" element={<ItemDetailPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/add" element={<AddItemPage session={session} profile={profile} onToast={showToast} />} />
