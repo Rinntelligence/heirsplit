@@ -90,9 +90,14 @@ export default function ItemDetailPage({ session, profile, onToast }) {
 
   return (
     <div style={{ maxWidth:'700px', margin:'0 auto', padding:'28px 16px', fontFamily:'DM Sans, sans-serif' }}>
-      <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>
-        ← Tilbake til estate
-      </button>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'4px' }}>
+        <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>
+          ← Tilbake til estate
+        </button>
+        <button onClick={() => navigate(`/estate/${id}/item/${itemId}/edit`)} style={{ background:'none', border:'1px solid #e0d8d0', borderRadius:'8px', color:'#6b5c4c', cursor:'pointer', fontSize:'13px', padding:'6px 14px', fontFamily:'DM Sans, sans-serif' }}>
+          ✏️ Rediger
+        </button>
+      </div>
 
       {/* Image gallery */}
       {item.image_url ? (
