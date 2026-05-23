@@ -94,12 +94,29 @@ export default function ItemDetailPage({ session, profile, onToast }) {
         ← Tilbake til estate
       </button>
 
-      {/* Image */}
-      <div style={{ background:'#f0ebe4', borderRadius:'14px', height:'260px', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'24px', overflow:'hidden' }}>
-        {item.image_url
-          ? <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
-          : <span style={{ fontSize:'90px' }}>{cat.emoji}</span>}
-      </div>
+      {/* Image gallery */}
+      {item.image_url ? (
+        <div style={{ marginBottom:'24px' }}>
+          {/* Main image */}
+          <div style={{ background:'#f0ebe4', borderRadius:'14px', height:'260px', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', marginBottom:'8px' }}>
+            <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+          </div>
+          {/* Extra images */}
+          {item.extra_images?.length > 0 && (
+            <div style={{ display:'flex', gap:'8px', overflowX:'auto' }}>
+              {item.extra_images.map((url, i) => (
+                <div key={i} style={{ width:'80px', height:'80px', borderRadius:'8px', overflow:'hidden', flexShrink:0, background:'#f0ebe4' }}>
+                  <img src={url} alt={`${item.title} ${i+2}`} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ background:'#f0ebe4', borderRadius:'14px', height:'260px', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'24px' }}>
+          <span style={{ fontSize:'90px' }}>{cat.emoji}</span>
+        </div>
+      )}
 
       {/* Item info */}
       <div style={{ background:'#fff', border:'1px solid #e8e0d6', borderRadius:'14px', padding:'28px', marginBottom:'20px' }}>

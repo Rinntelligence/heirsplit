@@ -74,6 +74,7 @@ export default function AddItemPage({ session, profile, onToast }) {
         if (urls.length > 0) {
           await supabase.from('items').update({
             image_url: urls[0],
+            extra_images: urls.slice(1),
           }).eq('id', newItem.id)
         }
       }
