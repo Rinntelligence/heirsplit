@@ -15,9 +15,9 @@ export default function ItemDetailPage({ session, profile, onToast }) {
   const [commentText, setCommentText] = useState('')
   const [submittingComment, setSubmittingComment] = useState(false)
   const [showAssign, setShowAssign] = useState(false)
-  const [lightboxUrl, setLightboxUrl] = useState(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false)
+  const [lightboxUrl, setLightboxUrl] = useState(null)
   const commentsEndRef = useRef(null)
 
   const load = async () => {
@@ -52,12 +52,10 @@ export default function ItemDetailPage({ session, profile, onToast }) {
   const myInterest = item.interests?.find(x => x.user_id === session.user.id)
   const isAssigned = item.status === 'assigned'
   const canDelete = myRole === 'admin' || item.added_by === session.user.id
+  const allImages = [item.image_url, ...(item.extra_images || [])].filter(Boolean)
 
   const handleInterest = async () => {
-    if (myInterest) {
-      setShowWithdrawConfirm(true)
-      return
-    }
+    if (myInterest) { setShowWithdrawConfirm(true); return }
     if (!showReason) { setShowReason(true); return }
     await addInterest(itemId, session.user.id, reason)
     onToast('Interesse registrert ✓')
@@ -67,8 +65,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
   const confirmWithdraw = async () => {
     await removeInterest(itemId, session.user.id)
     onToast('Interesse trukket tilbake')
-    setShowWithdrawConfirm(false)
-    load()
+    setShowWithdrawConfirm(false); load()
   }
 
   const handleComment = async () => {
@@ -91,45 +88,53 @@ export default function ItemDetailPage({ session, profile, onToast }) {
 
   return (
     <div style={{ maxWidth:'700px', margin:'0 auto', padding:'28px 16px', fontFamily:'DM Sans, sans-serif' }}>
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'4px' }}>
-        <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>
-          ← Tilbake til estate
-        </button>
-        <button onClick={() => navigate(`/estate/${id}/item/${itemId}/edit`)} style={{ background:'none', border:'1px solid #e0d8d0', borderRadius:'8px', color:'#6b5c4c', cursor:'pointer', fontSize:'13px', padding:'6px 14px', fontFamily:'DM Sans, sans-serif' }}>
-          ✏️ Rediger
-        </button>
-      </div>
 
       {/* Lightbox */}
       {lightboxUrl && (
         <div onClick={() => setLightboxUrl(null)} style={{
-          position:'fixed', inset:0, background:'rgba(0,0,0,0.92)',
+          position:'fixed', inset:0, background:'rgba(0,0,0,0.93)',
           zIndex:9999, display:'flex', alignItems:'center', justifyContent:'center',
           padding:'20px', cursor:'zoom-out',
         }}>
-          <img src={lightboxUrl} alt="" style={{ maxWidth:'100%', maxHeight:'100%', objectFit:'contain', borderRadius:'8px' }} />
+          <img src={lightboxUrl} alt="" style={{ maxWidth:'100%', maxHeight:'90vh', objectFit:'contain', borderRadius:'8px' }} />
           <button onClick={() => setLightboxUrl(null)} style={{
             position:'fixed', top:'16px', right:'16px',
-            background:'rgba(255,255,255,0.2)', border:'none', color:'#fff',
-            borderRadius:'50%', width:'40px', height:'40px',
-            fontSize:'20px', cursor:'pointer',
+            background:'rgba(255,255,255,0.15)', border:'none', color:'#fff',
+            borderRadius:'50%', width:'44px', height:'44px',
+            fontSize:'22px', cursor:'pointer',
           }}>×</button>
         </div>
       )}
 
-      {/* Image gallery */}
-      {item.image_url ? (
+      {/* Header */}
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'4px' }}>
+        <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>
+          ← Tilbake
+        </button>
+        <button onClick={() => navigate(`/estate/${id}/item/${itemId}/edit`)} style={{ background:'none', border:'1px solid #e0d8d0', borderRadius:'8px', color:'#6b5c4c', cursor:'pointer', fontSize:'13px', padding:'6px 14px', fontFamily:'DM Sans, sans-serif', marginBottom:'16px' }}>
+          ✏️ Rediger
+        </button>
+      </div>
+
+      {/* Images */}
+      {allImages.length > 0 ? (
         <div style={{ marginBottom:'24px' }}>
-          {/* Main image - clickable */}
-          <div onClick={() => setLightboxUrl(item.image_url)} style={{ background:'#f0ebe4', borderRadius:'14px', height:'260px', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', marginBottom:'8px', cursor:'zoom-in' }}>
-            <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+          <div onClick={() => setLightboxUrl(allImages[0])} style={{
+            background:'#f0ebe4', borderRadius:'14px', height:'260px',
+            display:'flex', alignItems:'center', justifyContent:'center',
+            overflow:'hidden', marginBottom:'8px', cursor:'zoom-in',
+          }}>
+            <img src={allImages[0]} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
           </div>
-          {/* Extra images - clickable */}
-          {item.extra_images?.length > 0 && (
+          {allImages.length > 1 && (
             <div style={{ display:'flex', gap:'8px', overflowX:'auto' }}>
-              {item.extra_images.map((url, i) => (
-                <div key={i} onClick={() => setLightboxUrl(url)} style={{ width:'80px', height:'80px', borderRadius:'8px', overflow:'hidden', flexShrink:0, background:'#f0ebe4', cursor:'zoom-in' }}>
-                  <img src={url} alt={`${item.title} ${i+2}`} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+              {allImages.slice(1).map((url, i) => (
+                <div key={i} onClick={() => setLightboxUrl(url)} style={{
+                  width:'80px', height:'80px', borderRadius:'8px',
+                  overflow:'hidden', flexShrink:0, background:'#f0ebe4', cursor:'zoom-in',
+                  border:'2px solid #e0d8d0',
+                }}>
+                  <img src={url} alt="" style={{ width:'100%', height:'100%', objectFit:'contain' }} />
                 </div>
               ))}
             </div>
@@ -153,30 +158,16 @@ export default function ItemDetailPage({ session, profile, onToast }) {
         {item.estimated_value && <p style={{ color:'#c4855a', fontSize:'13px', marginBottom:'8px' }}>Estimert verdi: {item.estimated_value}</p>}
         {item.description && <p style={{ color:'#4a3c30', lineHeight:'1.8', marginBottom:'24px', fontSize:'15px' }}>{item.description}</p>}
 
-        {/* Assigned */}
         {isAssigned ? (
-          <div style={{ padding:'16px', background:'#f0faf0', border:'1px solid #b8ddb8', borderRadius:'10px', display:'flex', alignItems:'center', gap:'12px', marginBottom:'24px' }}>
-            <div style={{ fontSize:'32px' }}>✅</div>
-            <div>
-              <div style={{ fontSize:'14px', color:'#1a1410', fontWeight:'500' }}>Denne gjenstanden er tildelt</div>
-              <div style={{ fontSize:'12px', color:'#7aaa7a', marginTop:'2px' }}>Offisielt fordelt</div>
-            </div>
+          <div style={{ padding:'16px', background:'#f0faf0', border:'1px solid #b8ddb8', borderRadius:'10px', marginBottom:'24px' }}>
+            <div style={{ fontSize:'14px', color:'#1a1410', fontWeight:'500' }}>✅ Denne gjenstanden er offisielt tildelt</div>
           </div>
         ) : showWithdrawConfirm ? (
-          /* Withdraw confirmation */
           <div style={{ padding:'18px', background:'#fef3e8', border:'1px solid #e8c4a0', borderRadius:'10px', marginBottom:'24px' }}>
-            <div style={{ fontSize:'15px', color:'#1a1410', marginBottom:'12px', fontWeight:'500' }}>
-              Vil du angre interessen din for denne gjenstanden?
-            </div>
+            <div style={{ fontSize:'15px', color:'#1a1410', marginBottom:'12px', fontWeight:'500' }}>Vil du angre interessen din?</div>
             <div style={{ display:'flex', gap:'10px' }}>
-              <button onClick={() => setShowWithdrawConfirm(false)} style={{
-                flex:1, padding:'11px', background:'#fff', border:'1px solid #e0d8d0',
-                borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif', color:'#6b5c4c',
-              }}>Nei, behold</button>
-              <button onClick={confirmWithdraw} style={{
-                flex:1, padding:'11px', background:'#c0392b', color:'#fff',
-                border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif',
-              }}>Ja, angre</button>
+              <button onClick={() => setShowWithdrawConfirm(false)} style={{ flex:1, padding:'11px', background:'#fff', border:'1px solid #e0d8d0', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif', color:'#6b5c4c' }}>Nei, behold</button>
+              <button onClick={confirmWithdraw} style={{ flex:1, padding:'11px', background:'#c0392b', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>Ja, angre</button>
             </div>
           </div>
         ) : myInterest ? (
@@ -185,9 +176,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
           </button>
         ) : showReason ? (
           <div style={{ marginBottom:'24px' }}>
-            <label style={{ display:'block', fontSize:'14px', color:'#6b5c4c', marginBottom:'10px' }}>
-              Hvorfor vil du ha denne gjenstanden? <span style={{ color:'#a89080' }}>(valgfri)</span>
-            </label>
+            <label style={{ display:'block', fontSize:'14px', color:'#6b5c4c', marginBottom:'10px' }}>Hvorfor vil du ha denne? <span style={{ color:'#a89080' }}>(valgfri)</span></label>
             <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder="f.eks. Jeg husker denne fra barndommen…" rows={3}
               style={{ width:'100%', padding:'12px 14px', border:'1px solid #e0d8d0', borderRadius:'8px', fontSize:'14px', fontFamily:'DM Sans, sans-serif', color:'#1a1410', background:'#faf7f3', resize:'vertical', outline:'none', boxSizing:'border-box' }} />
             <div style={{ display:'flex', gap:'10px', marginTop:'10px' }}>
@@ -216,7 +205,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
 
           {showAssign && (
             <div style={{ background:'#fef3e8', border:'1px solid #e8c4a0', borderRadius:'10px', padding:'16px', marginBottom:'16px' }}>
-              <p style={{ fontSize:'13px', color:'#6b5c4c', marginBottom:'12px' }}>Hvem får denne gjenstanden?</p>
+              <p style={{ fontSize:'13px', color:'#6b5c4c', marginBottom:'12px' }}>Hvem får denne?</p>
               {members.map(m => (
                 <button key={m.user_id} onClick={() => handleAssign(m.user_id)} style={{ display:'flex', alignItems:'center', gap:'10px', width:'100%', padding:'10px 14px', background:'#fff', border:'1px solid #e8c4a0', borderRadius:'8px', cursor:'pointer', textAlign:'left', fontFamily:'DM Sans, sans-serif', marginBottom:'6px' }}>
                   <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:m.profiles?.avatar_color||'#888', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'11px', color:'#fff', fontWeight:'500' }}>
@@ -296,7 +285,6 @@ export default function ItemDetailPage({ session, profile, onToast }) {
           ))}
           <div ref={commentsEndRef} />
         </div>
-
         <div style={{ display:'flex', gap:'8px', alignItems:'flex-end' }}>
           <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:profile?.avatar_color||'#888', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', color:'#fff', fontWeight:'500', flexShrink:0 }}>
             {(profile?.display_name||'?')[0].toUpperCase()}
