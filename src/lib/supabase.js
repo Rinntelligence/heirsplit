@@ -72,7 +72,12 @@ export const getItem = async (id) => {
     .select('*, profiles(display_name, avatar_color)')
     .eq('item_id', id)
 
-  return { data: { ...item, interests: interests || [] }, error: null }
+  // Parse extra_images if it's a string
+  const extraImages = typeof item.extra_images === 'string' 
+    ? JSON.parse(item.extra_images) 
+    : (item.extra_images || [])
+  
+  return { data: { ...item, extra_images: extraImages, interests: interests || [] }, error: null }
 }
 
 export const createItem = async (data) => {
