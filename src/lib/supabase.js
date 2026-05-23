@@ -38,7 +38,7 @@ export const getEstateMembers = (estate_id) =>
 export const getItems = async (estate_id) => {
   const { data: items, error } = await supabase
     .from('items')
-    .select('*, categories(label, emoji)')
+    .select('*, categories(label, emoji), extra_images')
     .eq('estate_id', estate_id)
     .order('created_at', { ascending: false })
 
@@ -62,7 +62,7 @@ export const getItems = async (estate_id) => {
 export const getItem = async (id) => {
   const { data: item, error } = await supabase
     .from('items')
-    .select('*, categories(label, emoji)')
+    .select('*, categories(label, emoji), extra_images')
     .eq('id', id).single()
 
   if (error) return { data: null, error }
