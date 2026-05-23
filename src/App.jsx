@@ -67,7 +67,7 @@ export default function App() {
       <div style={{ minHeight: '100vh', background: '#f8f5f0' }}>
         <TopBar profile={profile} session={session} onToast={showToast} />
         {toast && <Toast msg={toast.msg} type={toast.type} />}
-        <LanguageSwitcher />
+        
         <FeedbackWidget session={session} />
         <Routes>
           <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} />} />
