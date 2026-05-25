@@ -37,6 +37,8 @@ export default function App() {
     })
     return () => subscription.unsubscribe()
   }, [])
+
+  useEffect(() => {
     if (!session?.user) return
     supabase.from('profiles').select('*').eq('user_id', session.user.id).single()
       .then(({ data }) => {
