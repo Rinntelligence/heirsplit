@@ -111,6 +111,7 @@ export default function EstatePage({ session, profile, onToast }) {
           { v:items.length, l:'Gjenstander', emoji:'📦' },
           { v:myCount, l:'Mine interesser', emoji:'❤️', clickStatus:'mine' },
           { v:contested, l:'Ettertraktede', emoji:'🔥', warn:contested>0, clickStatus:'contested' },
+          { v:items.filter(i => i.interests?.length > 0).length, l:'Noen vil ha', emoji:'🙋', clickStatus:'wanted' },
           { v:unwanted, l:'Ingen vil ha', emoji:'😔', clickStatus:'unwanted' },
           { v:assigned, l:'Tildelt', emoji:'✅', clickStatus:'assigned' },
         ].map(s => (
