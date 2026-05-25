@@ -160,7 +160,19 @@ export default function FounderPage({ session }) {
                   </td>
                   <td style={{ padding:'12px 16px', fontSize:'13px', color:'#6b5c4c' }}>{p.email}</td>
                   <td style={{ padding:'12px 16px' }}>
-                    <span style={{ fontSize:'11px', background:p.plan==='business'?'#e8f0fe':p.plan==='family'?'#f0faf0':'#f5f0eb', color:p.plan==='business'?'#1a56db':p.plan==='family'?'#3a7a3a':'#6b5c4c', padding:'3px 8px', borderRadius:'20px' }}>{p.plan||'free'}</span>
+                    <select
+                      value={p.plan || 'free'}
+                      onChange={async (e) => {
+                        await supabase.from('profiles').update({ plan: e.target.value }).eq('user_id', p.user_id)
+                        setProfiles(prev => prev.map(x => x.user_id === p.user_id ? {...x, plan: e.target.value} : x))
+                      }}
+                      style={{ fontSize:'12px', border:'1px solid #e0d8d0', borderRadius:'6px', padding:'3px 8px', background:'#fff', cursor:'pointer', fontFamily:'DM Sans, sans-serif' }}
+                    >
+                      <option value="free">free</option>
+                      <option value="family">family</option>
+                      <option value="business">business</option>
+                      <option value="enterprise">enterprise</option>
+                    </select>
                   </td>
                   <td style={{ padding:'12px 16px', fontSize:'13px', color:'#a89080' }}>{new Date(p.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}</td>
                   <td style={{ padding:'12px 16px', fontSize:'13px', color:'#a89080' }}>{estates.filter(e=>e.owner_id===p.user_id).length}</td>

@@ -49,6 +49,7 @@ export default function EstatePage({ session, profile, onToast }) {
   const getFiltered = () => {
     if (filterStatus === 'mine') return items.filter(i => i.interests?.some(x => x.user_id === session.user.id))
     if (filterStatus === 'contested') return items.filter(i => i.interests?.length > 1)
+    if (filterStatus === 'wanted') return items.filter(i => i.interests?.length > 0)
     if (filterStatus === 'unwanted') return items.filter(i => i.interests?.length === 0)
     if (filterStatus === 'assigned') return items.filter(i => i.status === 'assigned')
     return items
@@ -194,6 +195,7 @@ export default function EstatePage({ session, profile, onToast }) {
               <option value="all">Alle gjenstander</option>
               <option value="mine">Mine interesser</option>
               <option value="contested">Ettertraktede</option>
+              <option value="wanted">Noen vil ha</option>
               <option value="unwanted">Ingen vil ha</option>
               <option value="assigned">Tildelt</option>
             </select>
