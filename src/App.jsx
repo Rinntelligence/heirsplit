@@ -20,18 +20,15 @@ import TopBar from './components/TopBar'
 import Toast from './components/Toast'
 import LanguageSwitcher from './components/LanguageSwitcher'
 import FeedbackWidget from './components/FeedbackWidget'
-
 export default function App() {
   const [session, setSession] = useState(undefined)
   const [profile, setProfile] = useState(null)
   const [toast, setToast] = useState(null)
   const navigate = useNavigate()
-
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type })
     setTimeout(() => setToast(null), 3200)
   }
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, s) => {
@@ -40,8 +37,6 @@ export default function App() {
     })
     return () => subscription.unsubscribe()
   }, [])
-
-  useEffect(() => {
     if (!session?.user) return
     supabase.from('profiles').select('*').eq('user_id', session.user.id).single()
       .then(({ data }) => {
@@ -49,9 +44,7 @@ export default function App() {
         if (!data?.display_name) navigate('/setup')
       })
   }, [session])
-
   if (session === undefined) return <Splash />
-
   if (!session) {
     return (
       <Routes>
@@ -60,8 +53,6 @@ export default function App() {
         <Route path="*" element={<LoginPage onToast={showToast} />} />
       </Routes>
     )
-  }
-
   return (
     <PlanProvider session={session}>
       <div style={{ minHeight: '100vh', background: '#f8f5f0' }}>
@@ -73,7 +64,6 @@ export default function App() {
           <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => { setProfile(p); navigate('/') }} onToast={showToast} />} />
           <Route path="/estate/:id" element={<EstatePage session={session} profile={profile} onToast={showToast} />} />
-          <Route path="/estate/:id/item/:itemId/edit" element={<EditItemPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/item/:itemId/edit" element={<EditItemPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/item/:itemId" element={<ItemDetailPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/add" element={<AddItemPage session={session} profile={profile} onToast={showToast} />} />
@@ -92,11 +82,7 @@ export default function App() {
     </PlanProvider>
   )
 }
-
 function Splash() {
-  return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f5f0', fontFamily: "'Playfair Display', serif", color: '#8c7b6b', fontSize: '20px', gap: '12px' }}>
       <span style={{ fontSize: '32px' }}>⚖️</span> HeirSplit
     </div>
-  )
-}
