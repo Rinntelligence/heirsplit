@@ -47,7 +47,7 @@ export const getItems = async (estate_id) => {
   // Fetch interests separately to avoid FK issues
   const { data: interests } = await supabase
     .from('interests')
-    .select('*, profiles(display_name, avatar_color)')
+    .select('id, item_id, user_id, reason, created_at, profiles(display_name, avatar_color)')
     .in('item_id', items.map(i => i.id))
 
   // Attach interests to items
