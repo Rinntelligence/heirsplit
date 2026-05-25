@@ -44,16 +44,27 @@ export const getItems = async (estate_id) => {
 
   if (error) return { data: [], error }
 
-  // Fetch interests separately to avoid FK issues
+  // Fetch interests without profiles join
   const { data: interests } = await supabase
     .from('interests')
-    .select('id, item_id, user_id, reason, created_at, profiles(display_name, avatar_color)')
+    .select('id, item_id, user_id, reason, created_at')
     .in('item_id', items.map(i => i.id))
 
-  // Attach interests to items
+  // Fetch profiles for those users
+  const userIds = [...new Set((interests || []).map(x => x.user_id))]
+  const { data: profiles } = userIds.length > 0
+    ? await supabase.from('profiles').select('user_id, display_name, avatar_color').in('user_id', userIds)
+    : { data: [] }
+
+  // Attach interests + profiles to items
   const itemsWithInterests = items.map(item => ({
     ...item,
-    interests: (interests || []).filter(x => x.item_id === item.id)
+    interests: (interests || [])
+      .filter(x => x.item_id === item.id)
+      .map(x => ({
+        ...x,
+        profiles: (profiles || []).find(p => p.user_id === x.user_id) || null
+      }))
   }))
 
   return { data: itemsWithInterests, error: null }
