@@ -20,7 +20,7 @@ export default function EstatePage({ session, profile, onToast }) {
 
   useEffect(() => {
     const saved = sessionStorage.getItem('estate_scroll_' + id)
-    if (saved) setTimeout(() => window.scrollTo(0, parseInt(saved)), 100)
+    if (saved) setTimeout(() => window.scrollTo({ top: parseInt(saved), behavior: 'instant' }), 300)
     const onScroll = () => sessionStorage.setItem('estate_scroll_' + id, window.scrollY)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
