@@ -8,6 +8,7 @@ import EstatesPage from './pages/EstatesPage'
 import EstatePage from './pages/EstatePage'
 import ItemDetailPage from './pages/ItemDetailPage'
 import AddItemPage from './pages/AddItemPage'
+import SwipePage from './pages/SwipePage'
 import EditItemPage from './pages/EditItemPage'
 import AdminPage from './pages/AdminPage'
 import FounderPage from './pages/FounderPage'
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => { setProfile(p); navigate('/') }} onToast={showToast} />} />
           <Route path="/estate/:id" element={<EstatePage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/item/:itemId" element={<ItemDetailPage session={session} profile={profile} onToast={showToast} />} />
+          <Route path="/estate/:id/swipe" element={<SwipePage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/item/:itemId/edit" element={<EditItemPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/add" element={<AddItemPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/admin" element={<AdminPage session={session} profile={profile} onToast={showToast} />} />
