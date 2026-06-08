@@ -144,7 +144,7 @@ export const submitFeedback = (user_id, estate_id, type, content, nps_score) =>
   supabase.from('feedback').insert({ user_id, estate_id, type, content, nps_score })
 
 export const getAllFeedback = () =>
-  supabase.from('feedback').select('*, profiles(display_name, email)')
+  supabase.from('feedback').select('*')
     .order('created_at', { ascending: false })
 
 export const uploadImage = async (file, itemId) => {
