@@ -108,6 +108,9 @@ export default function EstatePage({ session, profile, onToast }) {
               ⚙️ Administrer
             </button>
           )}
+          <button onClick={() => navigate(`/estate/${id}/swipe`)} style={{ padding:'9px 16px', background:'none', border:'1px solid #e0d8d0', borderRadius:'8px', cursor:'pointer', color:'#6b5c4c', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>
+            🃏 Sveip
+          </button>
           <button onClick={() => navigate(`/estate/${id}/add`)} style={{ padding:'9px 20px', background:'#1a1410', color:'#f5f0eb', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>
             + Legg til
           </button>
