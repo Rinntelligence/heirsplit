@@ -29,10 +29,23 @@ export const createEstate = (data) =>
 export const updateEstate = (id, data) =>
   supabase.from('estates').update(data).eq('id', id).select().single()
 
-export const getEstateMembers = (estate_id) =>
-  supabase.from('estate_members')
-    .select('*, profiles(display_name, avatar_color, email)')
+export const getEstateMembers = async (estate_id) => {
+  const { data: members, error } = await supabase
+    .from('estate_members')
+    .select('*')
     .eq('estate_id', estate_id)
+  if (error || !members) return { data: [], error }
+  const userIds = members.map(m => m.user_id)
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('user_id, display_name, avatar_color, email')
+    .in('user_id', userIds)
+  const data = members.map(m => ({
+    ...m,
+    profiles: (profiles || []).find(p => p.user_id === m.user_id) || null
+  }))
+  return { data, error: null }
+}
 
 // SIMPLE getItems - no complex joins that can fail
 export const getItems = async (estate_id) => {
