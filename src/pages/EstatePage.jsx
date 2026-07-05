@@ -223,7 +223,7 @@ export default function EstatePage({ session, profile, onToast }) {
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:'12px', marginBottom:'20px' }}>
                 {myItems.filter(i => filterCat === 'all' || i.category_id === filterCat).map(item => (
                   <ItemCard key={item.id} item={item} userId={session.user.id} myRole={myRole}
-                    onClick={() => navigate(`/estate/${id}/item/${item.id}`)}
+                    onClick={() => { sessionStorage.setItem('estate_scroll_' + id, window.scrollY); navigate(`/estate/${id}/item/${item.id}`) }}
                     onDelete={e => handleDelete(item, e)} />
                 ))}
               </div>
@@ -247,7 +247,7 @@ export default function EstatePage({ session, profile, onToast }) {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:'12px' }}>
               {(filterStatus === 'all' ? otherItems : filtered).filter(i => filterCat === 'all' || i.category_id === filterCat).map(item => (
                 <ItemCard key={item.id} item={item} userId={session.user.id} myRole={myRole}
-                  onClick={() => navigate(`/estate/${id}/item/${item.id}`)}
+                  onClick={() => { sessionStorage.setItem('estate_scroll_' + id, window.scrollY); navigate(`/estate/${id}/item/${item.id}`) }}
                   onDelete={e => handleDelete(item, e)} />
               ))}
             </div>
