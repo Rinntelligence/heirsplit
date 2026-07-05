@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEstate, getItems, getCategories, supabase } from '../lib/supabase'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
@@ -19,12 +19,22 @@ export default function EstatePage({ session, profile, onToast }) {
   const scrollPos = useRef(0)
 
   useEffect(() => {
-    const saved = sessionStorage.getItem('estate_scroll_' + id)
-    if (saved) setTimeout(() => window.scrollTo({ top: parseInt(saved), behavior: 'instant' }), 300)
     const onScroll = () => sessionStorage.setItem('estate_scroll_' + id, window.scrollY)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [id])
+
+  useEffect(() => {
+    if (!loading) {
+      const saved = sessionStorage.getItem('estate_scroll_' + id)
+      if (saved) {
+        setTimeout(() => {
+          window.scrollTo({ top: parseInt(saved), behavior: 'instant' })
+          sessionStorage.removeItem('estate_scroll_' + id)
+        }, 50)
+      }
+    }
+  }, [loading])
 
   const load = async () => {
     const [{ data: est }, { data: its }, { data: cats }, { data: mem }] = await Promise.all([
