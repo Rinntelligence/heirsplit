@@ -13,7 +13,7 @@ export function JoinPage({ session, onToast }) {
     const join = async () => {
       const { data: estate } = await supabase.from('estates').select('id, name').eq('invite_code', code).single()
       if (!estate) { setStatus('invalid'); return }
-      await supabase.from('estate_members').upsert({ estate_id: estate.id, user_id: session.user.id, role: 'member' }, { onConflict: 'estate_id,user_id' })
+      await supabase.from('estate_members').upsert({ estate_id: estate.id, user_id: session.user.id, role: 'admin' }, { onConflict: 'estate_id,user_id' })
       onToast(`Ble med i "${estate.name}" ✓`)
       navigate(`/estate/${estate.id}`)
     }
