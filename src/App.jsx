@@ -48,7 +48,13 @@ export default function App() {
     supabase.from('profiles').select('*').eq('user_id', session.user.id).single()
       .then(({ data }) => {
         setProfile(data)
-        if (!data?.display_name) navigate('/setup')
+        const pendingCode = localStorage.getItem('pendingJoinCode')
+        if (!data?.display_name) {
+          navigate('/setup')
+        } else if (pendingCode) {
+          localStorage.removeItem('pendingJoinCode')
+          navigate(`/join/${pendingCode}`)
+        }
       })
   }, [session])
 
@@ -73,7 +79,12 @@ export default function App() {
         <FeedbackWidget session={session} />
         <Routes>
           <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} />} />
-          <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => { setProfile(p); navigate('/') }} onToast={showToast} />} />
+          <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => {
+            setProfile(p)
+            const pendingCode = localStorage.getItem('pendingJoinCode')
+            if (pendingCode) { localStorage.removeItem('pendingJoinCode'); navigate(`/join/${pendingCode}`) }
+            else navigate('/')
+          }} onToast={showToast} />} />
           <Route path="/estate/:id" element={<EstatePage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/item/:itemId" element={<ItemDetailPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/swipe" element={<SwipePage session={session} profile={profile} onToast={showToast} />} />
