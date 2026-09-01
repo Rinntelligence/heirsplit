@@ -2,6 +2,31 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getCategories, uploadImage, supabase } from '../lib/supabase'
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+async function callEdgeFunction(name, body) {
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/${name}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(`${name} feilet: ${res.status}`)
+  return res.json()
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = ev => resolve(ev.target.result.split(',')[1])
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 export default function AddItemPage({ session, profile, onToast }) {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -13,14 +38,19 @@ export default function AddItemPage({ session, profile, onToast }) {
   const [imageFiles, setImageFiles] = useState([])
   const [imagePreviews, setImagePreviews] = useState([])
   const [saving, setSaving] = useState(false)
+  const [analyzing, setAnalyzing] = useState(false)
+  const [estimating, setEstimating] = useState(false)
+  const [aiEstimate, setAiEstimate] = useState(null)
+  const [purchasePrice, setPurchasePrice] = useState('')
+  const [purchaseYear, setPurchaseYear] = useState('')
   const fileRef = useRef()
 
   useEffect(() => {
-    getCategories().then(({ data }) => {
+    getCategories(id).then(({ data }) => {
       setCategories(data || [])
       if (data?.length) setCategoryId(data[0].id)
     })
-  }, [])
+  }, [id])
 
   const handleImages = (e) => {
     const files = Array.from(e.target.files).slice(0, 5)
@@ -44,6 +74,54 @@ export default function AddItemPage({ session, profile, onToast }) {
     setImagePreviews(prev => prev.filter((_, i) => i !== index))
   }
 
+  const analyzeWithAI = async () => {
+    if (!imageFiles[0]) return
+    setAnalyzing(true)
+    try {
+      const imageBase64 = await fileToBase64(imageFiles[0])
+      const result = await callEdgeFunction('analyze-item', {
+        imageBase64,
+        mimeType: imageFiles[0].type || 'image/jpeg',
+      })
+      if (result.title && !title) setTitle(result.title)
+      if (result.description && !description) setDescription(result.description)
+      if (result.condition) setCondition(result.condition)
+      if (result.category) {
+        const match = categories.find(c =>
+          c.label.toLowerCase().includes(result.category.toLowerCase()) ||
+          result.category.toLowerCase().includes(c.label.toLowerCase())
+        )
+        if (match) setCategoryId(match.id)
+      }
+      onToast('AI identifiserte gjenstanden ✓')
+    } catch (e) {
+      onToast('AI-analyse feilet — fyll inn manuelt', 'error')
+    } finally {
+      setAnalyzing(false)
+    }
+  }
+
+  const getValueEstimate = async () => {
+    if (!title.trim()) { onToast('Legg til navn på gjenstanden først', 'error'); return }
+    setEstimating(true)
+    try {
+      const cat = categories.find(c => c.id === categoryId)
+      const result = await callEdgeFunction('estimate-value', {
+        title,
+        description,
+        category: cat?.label || '',
+        condition,
+        purchase_price: purchasePrice ? parseFloat(purchasePrice) : undefined,
+        purchase_year: purchaseYear ? parseInt(purchaseYear) : undefined,
+      })
+      setAiEstimate(result)
+    } catch (e) {
+      onToast('Verdiestimering feilet', 'error')
+    } finally {
+      setEstimating(false)
+    }
+  }
+
   const save = async () => {
     if (!title.trim()) { onToast('Legg til navn på gjenstanden', 'error'); return }
     setSaving(true)
@@ -58,11 +136,13 @@ export default function AddItemPage({ session, profile, onToast }) {
         added_by_name: profile?.display_name || '',
         status: 'active',
         image_url: null,
+        estimated_value: aiEstimate?.likely_nok || null,
+        purchase_price: purchasePrice ? parseFloat(purchasePrice) : null,
+        purchase_year: purchaseYear ? parseInt(purchaseYear) : null,
       }).select().single()
 
       if (error) throw error
 
-      // Upload images one by one
       if (imageFiles.length > 0) {
         const urls = []
         for (const file of imageFiles) {
@@ -82,12 +162,13 @@ export default function AddItemPage({ session, profile, onToast }) {
       onToast('Gjenstand lagt til! ✓')
       navigate(`/estate/${id}`)
     } catch (e) {
-      console.error('Save error:', e)
       onToast('Feil: ' + e.message, 'error')
     } finally {
       setSaving(false)
     }
   }
+
+  const formatNOK = (n) => n ? new Intl.NumberFormat('nb-NO', { style: 'currency', currency: 'NOK', maximumFractionDigits: 0 }).format(n) : '—'
 
   return (
     <div style={{ maxWidth: '560px', margin: '0 auto', padding: '20px 16px 100px', fontFamily: 'DM Sans, sans-serif' }}>
@@ -99,12 +180,12 @@ export default function AddItemPage({ session, profile, onToast }) {
         Legg til gjenstand
       </h1>
       <p style={{ color: '#8c7b6b', fontSize: '14px', marginBottom: '24px' }}>
-        Fyll inn navn og ta gjerne bilde
+        Fyll inn navn og ta gjerne bilde — AI kan identifisere og verdsette automatisk
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-        {/* Images */}
+        {/* Bilder */}
         <div>
           <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '8px' }}>
             Bilder (valgfri, maks 5)
@@ -134,9 +215,20 @@ export default function AddItemPage({ session, profile, onToast }) {
             )}
           </div>
           <input ref={fileRef} type="file" accept="image/*" capture="environment" multiple onChange={handleImages} style={{ display: 'none' }} />
+
+          {/* AI-analyseknapp */}
+          {imageFiles.length > 0 && (
+            <button onClick={analyzeWithAI} disabled={analyzing} style={{
+              marginTop: '10px', padding: '9px 16px', background: analyzing ? '#c0b8b0' : '#c4855a',
+              color: '#fff', border: 'none', borderRadius: '8px', cursor: analyzing ? 'not-allowed' : 'pointer',
+              fontSize: '13px', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', gap: '6px',
+            }}>
+              {analyzing ? '🤖 Analyserer…' : '🤖 Analyser med AI'}
+            </button>
+          )}
         </div>
 
-        {/* Title - most important */}
+        {/* Navn */}
         <div>
           <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>
             Navn på gjenstand *
@@ -155,21 +247,25 @@ export default function AddItemPage({ session, profile, onToast }) {
           />
         </div>
 
-        {/* Category */}
+        {/* Kategori */}
         <div>
           <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>
             Kategori
           </label>
-          <select value={categoryId} onChange={e => setCategoryId(e.target.value)} style={{
-            width: '100%', padding: '14px', border: '1px solid #e0d8d0',
-            borderRadius: '10px', fontSize: '16px', background: '#faf7f3',
-            color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif',
-          }}>
-            {categories.map(c => <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>)}
-          </select>
+          {categories.length === 0 ? (
+            <p style={{ fontSize: '13px', color: '#a89080' }}>Ingen kategorier ennå — <button onClick={() => navigate(`/estate/${id}/categories`)} style={{ background: 'none', border: 'none', color: '#c4855a', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', fontSize: '13px', padding: 0, textDecoration: 'underline' }}>legg til kategorier</button></p>
+          ) : (
+            <select value={categoryId} onChange={e => setCategoryId(e.target.value)} style={{
+              width: '100%', padding: '14px', border: '1px solid #e0d8d0',
+              borderRadius: '10px', fontSize: '16px', background: '#faf7f3',
+              color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif',
+            }}>
+              {categories.map(c => <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>)}
+            </select>
+          )}
         </div>
 
-        {/* Condition */}
+        {/* Tilstand */}
         <div>
           <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '8px' }}>
             Tilstand
@@ -188,7 +284,7 @@ export default function AddItemPage({ session, profile, onToast }) {
           </div>
         </div>
 
-        {/* Description */}
+        {/* Beskrivelse */}
         <div>
           <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>
             Beskrivelse (valgfri)
@@ -207,9 +303,57 @@ export default function AddItemPage({ session, profile, onToast }) {
           />
         </div>
 
+        {/* Kjøpspris og -år for verdiestimat */}
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>Kjøpspris (NOK, valgfri)</label>
+            <input type="number" value={purchasePrice} onChange={e => setPurchasePrice(e.target.value)} placeholder="f.eks. 5000"
+              style={{ width: '100%', padding: '12px 14px', border: '1px solid #e0d8d0', borderRadius: '10px', fontSize: '15px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>Kjøpsår (valgfri)</label>
+            <input type="number" value={purchaseYear} onChange={e => setPurchaseYear(e.target.value)} placeholder="f.eks. 2010"
+              style={{ width: '100%', padding: '12px 14px', border: '1px solid #e0d8d0', borderRadius: '10px', fontSize: '15px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+          </div>
+        </div>
+
+        {/* Verdiestimat-knapp */}
+        {title.trim() && (
+          <button onClick={getValueEstimate} disabled={estimating} style={{
+            padding: '11px 18px', background: estimating ? '#c0b8b0' : '#6b8fa8',
+            color: '#fff', border: 'none', borderRadius: '8px', cursor: estimating ? 'not-allowed' : 'pointer',
+            fontSize: '14px', fontFamily: 'DM Sans, sans-serif',
+          }}>
+            {estimating ? '🔍 Estimerer…' : '💰 Få verdiestimat'}
+          </button>
+        )}
+
+        {/* Verdiestimat-resultat */}
+        {aiEstimate && (
+          <div style={{ background: '#f0faf0', border: '1px solid #b8ddb8', borderRadius: '12px', padding: '20px' }}>
+            <div style={{ fontSize: '13px', color: '#3a7a3a', fontWeight: '500', marginBottom: '12px' }}>💰 AI Verdiestimat (NOK)</div>
+            <div style={{ display: 'flex', gap: '16px', marginBottom: '12px', flexWrap: 'wrap' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '11px', color: '#8c7b6b', marginBottom: '2px' }}>Lavt</div>
+                <div style={{ fontSize: '18px', color: '#1a1410', fontFamily: 'Playfair Display, serif' }}>{formatNOK(aiEstimate.low_nok)}</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '11px', color: '#8c7b6b', marginBottom: '2px' }}>Mest sannsynlig</div>
+                <div style={{ fontSize: '22px', color: '#3a7a3a', fontFamily: 'Playfair Display, serif', fontWeight: '500' }}>{formatNOK(aiEstimate.likely_nok)}</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '11px', color: '#8c7b6b', marginBottom: '2px' }}>Høyt</div>
+                <div style={{ fontSize: '18px', color: '#1a1410', fontFamily: 'Playfair Display, serif' }}>{formatNOK(aiEstimate.high_nok)}</div>
+              </div>
+            </div>
+            {aiEstimate.reasoning && <p style={{ fontSize: '12px', color: '#6b5c4c', lineHeight: '1.5', marginBottom: '0' }}>{aiEstimate.reasoning}</p>}
+            <p style={{ fontSize: '11px', color: '#a89080', marginTop: '8px', marginBottom: 0 }}>⚠️ Estimater er kun veiledende — ikke profesjonell takst.</p>
+          </div>
+        )}
+
       </div>
 
-      {/* Fixed save button at bottom - easy to reach on mobile */}
+      {/* Fast lagreknapp nederst */}
       <div style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
         padding: '16px', background: '#fff',

@@ -41,23 +41,23 @@ export default function AdminPage({ session, profile, onToast }) {
   const regenerateCode = async () => {
     const code = Math.random().toString(36).substring(2,8).toUpperCase()
     await updateEstate(id, { invite_code: code })
-    onToast('Invite link regenerated ✓')
+    onToast('Invitasjonslenke fornyet ✓')
     load()
   }
 
   const saveBranding = async () => {
-    if (!can('whitelabel')) { onToast('White-label requires Business plan', 'error'); return }
+    if (!can('whitelabel')) { onToast('Hvitmerking krever Business-plan', 'error'); return }
     setSaving(true)
     let logoUrl = estate.branding_logo
     if (logoFile) logoUrl = await uploadLogo(logoFile, id)
     await updateEstate(id, { branding_color: brandColor, branding_logo: logoUrl })
-    onToast('Branding saved ✓')
+    onToast('Merkevare lagret ✓')
     setSaving(false); load()
   }
 
   const removeMember = async (userId) => {
     await supabase.from('estate_members').delete().eq('estate_id', id).eq('user_id', userId)
-    onToast('Member removed')
+    onToast('Medlem fjernet')
     load()
   }
 
@@ -70,33 +70,33 @@ export default function AdminPage({ session, profile, onToast }) {
     reader.readAsDataURL(file)
   }
 
-  if (!estate) return <div style={{ padding:'80px', textAlign:'center', color:'#a89080', fontFamily:'DM Sans, sans-serif' }}>Loading…</div>
+  if (!estate) return <div style={{ padding:'80px', textAlign:'center', color:'#a89080', fontFamily:'DM Sans, sans-serif' }}>Laster…</div>
 
   return (
     <div style={{ maxWidth:'680px', margin:'0 auto', padding:'28px 16px', fontFamily:'DM Sans, sans-serif' }}>
-      <button onClick={()=>navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>← Back to estate</button>
-      <h1 style={{ fontFamily:'Playfair Display, serif', fontSize:'24px', fontWeight:'400', color:'#1a1410', marginBottom:'28px' }}>Manage — {estate.name}</h1>
+      <button onClick={()=>navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>← Tilbake til boet</button>
+      <h1 style={{ fontFamily:'Playfair Display, serif', fontSize:'24px', fontWeight:'400', color:'#1a1410', marginBottom:'28px' }}>Administrer — {estate.name}</h1>
 
       {/* Invite link */}
       <Card style={{ padding:'28px', marginBottom:'20px' }}>
-        <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410', marginBottom:'6px' }}>Invite link</h2>
-        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'16px' }}>Send this link to family members — they click it and are automatically added to this estate.</p>
+        <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410', marginBottom:'6px' }}>Invitasjonslenke</h2>
+        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'16px' }}>Send denne lenken til familiemedlemmer — de klikker og legges automatisk til i boet.</p>
         <div style={{ display:'flex', gap:'8px', marginBottom:'12px' }}>
           <input value={inviteUrl} readOnly
             style={{ flex:1, padding:'11px 14px', border:'1px solid #e0d8d0', borderRadius:'8px', fontSize:'13px', background:'#faf7f3', color:'#6b5c4c', outline:'none', fontFamily:'monospace' }} />
           <button onClick={copyInvite} style={{ padding:'11px 18px', background: copied?'#7aaa7a':'#1a1410', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif', whiteSpace:'nowrap' }}>
-            {copied ? '✓ Copied!' : 'Copy link'}
+            {copied ? '✓ Kopiert!' : 'Kopier lenke'}
           </button>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
-          <span style={{ fontSize:'13px', color:'#8c7b6b' }}>Invite code: <strong style={{ letterSpacing:'2px', color:'#1a1410' }}>{estate.invite_code}</strong></span>
-          <button onClick={regenerateCode} style={{ fontSize:'12px', color:'#a89080', background:'none', border:'none', cursor:'pointer', textDecoration:'underline', fontFamily:'DM Sans, sans-serif' }}>Regenerate</button>
+          <span style={{ fontSize:'13px', color:'#8c7b6b' }}>Invitasjonskode: <strong style={{ letterSpacing:'2px', color:'#1a1410' }}>{estate.invite_code}</strong></span>
+          <button onClick={regenerateCode} style={{ fontSize:'12px', color:'#a89080', background:'none', border:'none', cursor:'pointer', textDecoration:'underline', fontFamily:'DM Sans, sans-serif' }}>Forny kode</button>
         </div>
       </Card>
 
       {/* Members */}
       <Card style={{ padding:'28px', marginBottom:'20px' }}>
-        <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410', marginBottom:'16px' }}>Members ({members.length})</h2>
+        <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410', marginBottom:'16px' }}>Medlemmer ({members.length})</h2>
         <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
           {members.map(m => (
             <div key={m.user_id} style={{ display:'flex', alignItems:'center', gap:'12px', padding:'12px 14px', background:'#faf7f3', border:'1px solid #e8e0d6', borderRadius:'8px' }}>
@@ -117,14 +117,14 @@ export default function AdminPage({ session, profile, onToast }) {
       {/* White-label branding */}
       <Card style={{ padding:'28px', marginBottom:'20px' }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'6px' }}>
-          <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410' }}>Branding</h2>
-          {!can('whitelabel') && <span style={{ fontSize:'11px', background:'#fef3e8', color:'#c4855a', padding:'3px 8px', borderRadius:'20px' }}>Business plan</span>}
+          <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410' }}>Merkevare</h2>
+          {!can('whitelabel') && <span style={{ fontSize:'11px', background:'#fef3e8', color:'#c4855a', padding:'3px 8px', borderRadius:'20px' }}>Business-plan</span>}
         </div>
-        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'20px' }}>Customize the look for your clients — your logo and colors in the top bar.</p>
+        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'20px' }}>Tilpass utseendet for dine klienter — din logo og farger i topplinjen.</p>
 
         <div style={{ display:'flex', gap:'20px', flexWrap:'wrap', marginBottom:'20px' }}>
           <div style={{ flex:1, minWidth:'160px' }}>
-            <label style={{ display:'block', fontSize:'13px', color:'#8c7b6b', marginBottom:'8px' }}>Brand color</label>
+            <label style={{ display:'block', fontSize:'13px', color:'#8c7b6b', marginBottom:'8px' }}>Merkevarefarge</label>
             <div style={{ display:'flex', gap:'10px', alignItems:'center' }}>
               <input type="color" value={brandColor} onChange={e=>setBrandColor(e.target.value)}
                 style={{ width:'48px', height:'48px', border:'1px solid #e0d8d0', borderRadius:'8px', cursor:'pointer', padding:'2px' }} />
@@ -132,7 +132,7 @@ export default function AdminPage({ session, profile, onToast }) {
             </div>
           </div>
           <div style={{ flex:1, minWidth:'160px' }}>
-            <label style={{ display:'block', fontSize:'13px', color:'#8c7b6b', marginBottom:'8px' }}>Logo</label>
+            <label style={{ display:'block', fontSize:'13px', color:'#8c7b6b', marginBottom:'8px' }}>Logotype</label>
             <div onClick={()=>can('whitelabel')&&logoRef.current.click()} style={{ width:'80px', height:'48px', background:'#f0ebe4', border:'1px dashed #d4c8b8', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', cursor: can('whitelabel')?'pointer':'not-allowed', overflow:'hidden' }}>
               {logoPreview ? <img src={logoPreview} alt="logo" style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:'20px' }}>🖼️</span>}
             </div>
@@ -151,15 +151,15 @@ export default function AdminPage({ session, profile, onToast }) {
           padding:'11px 22px', background: can('whitelabel')?'#1a1410':'#c0b8b0',
           color:'#f5f0eb', border:'none', borderRadius:'8px',
           cursor:can('whitelabel')?'pointer':'not-allowed', fontSize:'14px', fontFamily:'DM Sans, sans-serif',
-        }}>{saving?'Saving…':'Save branding'}</button>
+        }}>{saving?'Lagrer…':'Lagre merkevare'}</button>
       </Card>
 
       {/* Categories */}
       <Card style={{ padding:'28px' }}>
-        <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410', marginBottom:'6px' }}>Categories</h2>
-        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'16px' }}>Manage the item categories available across all estates.</p>
+        <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410', marginBottom:'6px' }}>Kategorier</h2>
+        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'16px' }}>Administrer kategoriene som er tilgjengelige for gjenstander i dette boet.</p>
         <button onClick={()=>navigate(`/estate/${id}/categories`)} style={{ padding:'9px 18px', background:'none', border:'1px solid #e0d8d0', borderRadius:'8px', cursor:'pointer', color:'#6b5c4c', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>
-          Manage categories →
+          Administrer kategorier →
         </button>
       </Card>
     </div>

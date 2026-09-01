@@ -1,7 +1,7 @@
 // Simple EN/NO language system - no external dependencies
 
 export const getLang = () => {
-  try { return localStorage.getItem('hs_lang') || 'en' } catch { return 'en' }
+  try { return localStorage.getItem('hs_lang') || 'no' } catch { return 'no' }
 }
 
 export const setLang = (code) => {
