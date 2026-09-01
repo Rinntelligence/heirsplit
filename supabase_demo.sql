@@ -121,10 +121,10 @@ BEGIN
 
   INSERT INTO estate_members (estate_id, user_id, role) VALUES
     ('deed0001-0000-0000-0000-000000000001', my_id,                                              'admin'),
-    ('deed0001-0000-0000-0000-000000000001', 'de000001-0000-0000-0000-000000000001', 'member'),
-    ('deed0001-0000-0000-0000-000000000001', 'de000002-0000-0000-0000-000000000002', 'member'),
-    ('deed0001-0000-0000-0000-000000000001', 'de000003-0000-0000-0000-000000000003', 'member')
-  ON CONFLICT (estate_id, user_id) DO NOTHING;
+    ('deed0001-0000-0000-0000-000000000001', 'de000001-0000-0000-0000-000000000001', 'admin'),
+    ('deed0001-0000-0000-0000-000000000001', 'de000002-0000-0000-0000-000000000002', 'admin'),
+    ('deed0001-0000-0000-0000-000000000001', 'de000003-0000-0000-0000-000000000003', 'admin')
+  ON CONFLICT (estate_id, user_id) DO UPDATE SET role = 'admin';
 
   INSERT INTO heirs (estate_id, name, email, relationship, percentage) VALUES
     ('deed0001-0000-0000-0000-000000000001', 'Kari Hansen',      'kari.demo@heirsplit.no', 'Barn', 33.3),
