@@ -28,11 +28,17 @@ export default function TopBar({ profile, session, estate }) {
       padding: '0 20px', position: 'sticky', top: 0, zIndex: 100,
       fontFamily: 'Karla, sans-serif', boxShadow: '0 1px 12px rgba(0,0,0,0.18)',
     }}>
-      <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FBF9F5" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 3v18M7 21h10M5 7h4M15 7h4M5 7L2.5 12a2.5 2.5 0 0 0 5 0L5 7zM19 7l-2.5 5a2.5 2.5 0 0 0 5 0L19 7z"/>
+      <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+        <svg width="130" height="36" viewBox="0 0 150 40" xmlns="http://www.w3.org/2000/svg">
+          <line x1="18" y1="4" x2="18" y2="14" stroke="#E8DFD0" strokeWidth="1.4" strokeLinecap="round"/>
+          <line x1="18" y1="14" x2="9" y2="28" stroke="#E8DFD0" strokeWidth="1.4" strokeLinecap="round"/>
+          <line x1="18" y1="14" x2="18" y2="28" stroke="#E8DFD0" strokeWidth="1.4" strokeLinecap="round"/>
+          <line x1="18" y1="14" x2="27" y2="28" stroke="#E8DFD0" strokeWidth="1.4" strokeLinecap="round"/>
+          <circle cx="9" cy="28" r="1.7" fill="#A8B598"/>
+          <circle cx="18" cy="28" r="1.7" fill="#A8B598"/>
+          <circle cx="27" cy="28" r="1.7" fill="#A8B598"/>
+          <text x="42" y="26" fontFamily="Fraunces, serif" fontSize="21" fill="#F7F3EC">Fordel</text>
         </svg>
-        <span style={{ fontFamily: 'Fraunces, serif', fontSize: '17px', color: '#FBF9F5' }}>{brandName}</span>
       </button>
 
       <div style={{ position: 'relative' }}>
