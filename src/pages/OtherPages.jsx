@@ -14,7 +14,7 @@ export function JoinPage({ session, onToast }) {
       const { data: estate } = await supabase.from('estates').select('id, name').eq('invite_code', code).single()
       if (!estate) { setStatus('invalid'); return }
       await supabase.from('estate_members').upsert({ estate_id: estate.id, user_id: session.user.id, role: 'member' }, { onConflict: 'estate_id,user_id' })
-      onToast(`Joined "${estate.name}" ✓`)
+      onToast(`Ble med i "${estate.name}" ✓`)
       navigate(`/estate/${estate.id}`)
     }
     join()
@@ -24,8 +24,8 @@ export function JoinPage({ session, onToast }) {
     <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#f8f5f0', fontFamily:'DM Sans, sans-serif' }}>
       <div style={{ textAlign:'center', padding:'40px' }}>
         {status === 'invalid'
-          ? <><div style={{ fontSize:'48px', marginBottom:'16px' }}>❌</div><h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'22px', fontWeight:'400', color:'#1a1410' }}>Invalid invite link</h2><p style={{ color:'#8c7b6b', marginTop:'8px' }}>This link may have expired or been regenerated.</p></>
-          : <><div style={{ fontSize:'48px', marginBottom:'16px' }}>⏳</div><h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'22px', fontWeight:'400', color:'#1a1410' }}>Joining estate…</h2></>}
+          ? <><div style={{ fontSize:'48px', marginBottom:'16px' }}>❌</div><h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'22px', fontWeight:'400', color:'#1a1410' }}>Ugyldig invitasjonslenke</h2><p style={{ color:'#8c7b6b', marginTop:'8px' }}>Denne lenken kan ha utløpt eller blitt fornyet.</p></>
+          : <><div style={{ fontSize:'48px', marginBottom:'16px' }}>⏳</div><h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'22px', fontWeight:'400', color:'#1a1410' }}>Blir med i boet…</h2></>}
       </div>
     </div>
   )
@@ -62,8 +62,8 @@ export function PricingPage({ session }) {
                 {p.features.map(f=><div key={f} style={{ fontSize:'13px', color:'#4a3c30', display:'flex', gap:'8px' }}><span style={{ color:'#7aaa7a' }}>✓</span>{f}</div>)}
                 {p.missing.map(f=><div key={f} style={{ fontSize:'13px', color:'#c0b0a0', display:'flex', gap:'8px' }}><span>—</span>{f}</div>)}
               </div>
-              <button onClick={()=>session?alert('Stripe coming soon — contact us at hello@heirsplit.com'):navigate('/')} style={{ width:'100%', padding:'11px', background:p.name==='Free'?'#f5f0eb':p.color, color:p.name==='Free'?'#1a1410':'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>
-                {p.name==='Free'?'Get started free':`Get ${p.name}`}
+              <button onClick={()=>session?window.location.href='mailto:hello@heirsplit.com?subject=Upgrade to ' + p.name:navigate('/')} style={{ width:'100%', padding:'11px', background:p.name==='Free'?'#f5f0eb':p.color, color:p.name==='Free'?'#1a1410':'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>
+                {p.name==='Free'?'Kom i gang gratis':`Få ${p.name}`}
               </button>
             </div>
           ))}
@@ -86,29 +86,29 @@ export function CategoriesPage({ session, onToast }) {
   const [showPicker, setShowPicker] = useState(false)
   const EMOJIS = ['🛋️','🖼️','📚','🍳','🏺','📺','🧣','📦','🪑','🛏️','🪞','🎨','🎻','⌚','💍','🪴','🧸','🎁','🗝️','📷','🪆','🧩','🍷','🕰️','🪵','🧺','💻','🎭']
 
-  const load = () => supabase.from('categories').select('*').order('label').then(({data})=>setCategories(data||[]))
+  const load = () => supabase.from('categories').select('*').eq('estate_id', id).order('label').then(({data})=>setCategories(data||[]))
   useEffect(()=>{load()},[])
 
   const add = async () => {
     if (!newLabel.trim()) return
-    await supabase.from('categories').insert({ label:newLabel.trim(), emoji:newEmoji })
-    setNewLabel(''); setNewEmoji('📦'); setShowPicker(false); onToast('Category added ✓'); load()
+    await supabase.from('categories').insert({ label:newLabel.trim(), emoji:newEmoji, estate_id:id })
+    setNewLabel(''); setNewEmoji('📦'); setShowPicker(false); onToast('Kategori lagt til ✓'); load()
   }
   const remove = async (catId) => {
     await supabase.from('categories').delete().eq('id', catId)
-    onToast('Category removed'); load()
+    onToast('Kategori fjernet'); load()
   }
 
   return (
     <div style={{ maxWidth:'520px', margin:'0 auto', padding:'28px 16px', fontFamily:'DM Sans, sans-serif' }}>
-      <button onClick={()=>navigate(`/estate/${id}/admin`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>← Back to admin</button>
-      <h1 style={{ fontFamily:'Playfair Display, serif', fontSize:'24px', fontWeight:'400', color:'#1a1410', marginBottom:'28px' }}>Categories</h1>
+      <button onClick={()=>navigate(`/estate/${id}/admin`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'DM Sans, sans-serif' }}>← Tilbake til administrasjon</button>
+      <h1 style={{ fontFamily:'Playfair Display, serif', fontSize:'24px', fontWeight:'400', color:'#1a1410', marginBottom:'28px' }}>Kategorier</h1>
 
       <div style={{ background:'#fff', border:'1px solid #e8e0d6', borderRadius:'12px', padding:'24px', marginBottom:'16px' }}>
-        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'14px' }}>Add new category:</p>
+        <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'14px' }}>Legg til ny kategori:</p>
         <div style={{ display:'flex', gap:'8px', marginBottom: showPicker?'12px':'0' }}>
           <button onClick={()=>setShowPicker(!showPicker)} style={{ padding:'10px 14px', border:'1px solid #e0d8d0', borderRadius:'8px', background:'#faf7f3', cursor:'pointer', fontSize:'20px' }}>{newEmoji}</button>
-          <input value={newLabel} onChange={e=>setNewLabel(e.target.value)} onKeyDown={e=>e.key==='Enter'&&add()} placeholder="Category name…"
+          <input value={newLabel} onChange={e=>setNewLabel(e.target.value)} onKeyDown={e=>e.key==='Enter'&&add()} placeholder="Kategorinavn…"
             style={{ flex:1, padding:'10px 14px', border:'1px solid #e0d8d0', borderRadius:'8px', fontSize:'15px', background:'#faf7f3', color:'#1a1410', outline:'none', fontFamily:'DM Sans, sans-serif' }} />
           <button onClick={add} disabled={!newLabel.trim()} style={{ padding:'10px 18px', background:newLabel.trim()?'#1a1410':'#c0b8b0', color:'#f5f0eb', border:'none', borderRadius:'8px', cursor:newLabel.trim()?'pointer':'not-allowed', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>+</button>
         </div>
@@ -120,6 +120,9 @@ export function CategoriesPage({ session, onToast }) {
       </div>
 
       <div style={{ background:'#fff', border:'1px solid #e8e0d6', borderRadius:'12px', overflow:'hidden' }}>
+        {categories.length === 0 && (
+          <div style={{ padding:'24px', textAlign:'center', color:'#a89080', fontSize:'14px' }}>Ingen kategorier ennå. Legg til den første.</div>
+        )}
         {categories.map((c,i)=>(
           <div key={c.id} style={{ display:'flex', alignItems:'center', padding:'14px 20px', borderBottom:i<categories.length-1?'1px solid #f0ebe4':'none' }}>
             <span style={{ fontSize:'20px', marginRight:'14px' }}>{c.emoji}</span>

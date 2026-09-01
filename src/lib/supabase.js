@@ -150,8 +150,10 @@ export const addComment = (item_id, user_id, content) =>
 export const deleteComment = (id) =>
   supabase.from('comments').delete().eq('id', id)
 
-export const getCategories = () =>
-  supabase.from('categories').select('*').order('label')
+export const getCategories = (estate_id) => {
+  const query = supabase.from('categories').select('*').order('label')
+  return estate_id ? query.eq('estate_id', estate_id) : query
+}
 
 export const submitFeedback = (user_id, estate_id, type, content, nps_score) =>
   supabase.from('feedback').insert({ user_id, estate_id, type, content, nps_score })

@@ -16,6 +16,7 @@ export default function EstatePage({ session, profile, onToast }) {
   const [filterCat, setFilterCat] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
   const [loading, setLoading] = useState(true)
+  const [confirmItem, setConfirmItem] = useState(null)
   const scrollPos = useRef(0)
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function EstatePage({ session, profile, onToast }) {
     const [{ data: est }, { data: its }, { data: cats }, { data: mem }] = await Promise.all([
       getEstate(id),
       getItems(id),
-      getCategories(),
+      getCategories(id),
       supabase.from('estate_members').select('role').eq('estate_id', id).eq('user_id', session.user.id).single(),
     ])
     setEstate(est)
@@ -81,13 +82,18 @@ export default function EstatePage({ session, profile, onToast }) {
   const unwanted = items.filter(i => i.interests?.length === 0).length
   const assigned = items.filter(i => i.status === 'assigned').length
 
-  const handleDelete = async (item, e) => {
+  const handleDelete = (item, e) => {
     e.stopPropagation()
     const canDelete = myRole === 'admin' || item.added_by === session.user.id
     if (!canDelete) { onToast('Bare admin kan slette andres gjenstander', 'error'); return }
-    if (!window.confirm(`Slette "${item.title}"? Kan ikke angres.`)) return
-    await supabase.from('items').delete().eq('id', item.id)
+    setConfirmItem(item)
+  }
+
+  const confirmDelete = async () => {
+    if (!confirmItem) return
+    await supabase.from('items').delete().eq('id', confirmItem.id)
     onToast('Gjenstand slettet')
+    setConfirmItem(null)
     load()
   }
 
@@ -263,6 +269,21 @@ export default function EstatePage({ session, profile, onToast }) {
             </div>
           )}
         </>
+      )}
+
+      {/* Bekreft sletting */}
+      {confirmItem && (
+        <div onClick={() => setConfirmItem(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:200, padding:'20px' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background:'#fff', borderRadius:'14px', padding:'28px', maxWidth:'380px', width:'100%' }}>
+            <h3 style={{ fontFamily:'Playfair Display, serif', fontSize:'18px', fontWeight:'400', color:'#1a1410', marginBottom:'8px' }}>Slett gjenstand</h3>
+            <p style={{ fontSize:'14px', color:'#6b5c4c', marginBottom:'6px' }}>«{confirmItem.title}»</p>
+            <p style={{ fontSize:'13px', color:'#a89080', marginBottom:'24px' }}>Kan ikke angres.</p>
+            <div style={{ display:'flex', gap:'10px' }}>
+              <button onClick={() => setConfirmItem(null)} style={{ flex:1, padding:'11px', background:'none', border:'1px solid #e0d8d0', borderRadius:'8px', cursor:'pointer', color:'#6b5c4c', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>Avbryt</button>
+              <button onClick={confirmDelete} style={{ flex:1, padding:'11px', background:'#c46a6a', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>Slett</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
