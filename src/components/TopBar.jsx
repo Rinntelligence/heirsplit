@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { signOut } from '../lib/supabase'
 import { getLang, setLang } from '../lib/lang'
 
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
+
 export default function TopBar({ profile, session, estate }) {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -36,9 +38,9 @@ export default function TopBar({ profile, session, estate }) {
       <div style={{ position: 'relative' }}>
         <button onClick={() => setMenuOpen(!menuOpen)} style={{
           width: '36px', height: '36px', borderRadius: '50%',
-          background: profile?.avatar_color || '#8B9A7D',
-          border: '2px solid rgba(255,255,255,0.25)', cursor: 'pointer',
-          fontSize: '14px', color: '#fff', fontWeight: '500', fontFamily: 'Karla, sans-serif',
+          background: profile?.avatar_color || '#DCE3D2',
+          border: tc(profile?.avatar_color||'#DCE3D2')==='#3A2F26' ? '2px solid #D9CFC0' : '2px solid rgba(255,255,255,0.25)', cursor: 'pointer',
+          fontSize: '14px', color: tc(profile?.avatar_color||'#DCE3D2'), fontWeight: '500', fontFamily: 'Karla, sans-serif',
         }}>{(profile?.display_name || '?')[0].toUpperCase()}</button>
 
         {menuOpen && (

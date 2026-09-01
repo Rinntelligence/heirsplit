@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { upsertProfile } from '../lib/supabase'
 
-const COLORS = ['#5F6E52','#8B9A7D','#9C8267','#7A8B6E','#A97C3F','#6E8B87','#8B3A3A','#6E8B87']
+const COLORS = ['#DCE3D2','#E8DFD0','#C9AE8E','#A8B598','#8B9A7D','#D9CFC0','#5F6E52','#9C8267']
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
 
 export default function ProfileSetupPage({ session, onSaved, onToast }) {
   const [name, setName] = useState('')
@@ -24,7 +25,7 @@ export default function ProfileSetupPage({ session, onSaved, onToast }) {
         <p style={{ color:'#9C8267', fontSize:'14px', lineHeight:'1.6', marginBottom:'28px' }}>Sett opp profilen din så familiemedlemmer vet hvem du er.</p>
 
         <div style={{ display:'flex', justifyContent:'center', marginBottom:'24px' }}>
-          <div style={{ width:'72px', height:'72px', borderRadius:'50%', background:color, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'28px', color:'#fff', fontWeight:'500', transition:'background 0.2s' }}>
+          <div style={{ width:'72px', height:'72px', borderRadius:'50%', background:color, border:tc(color)==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'28px', color:tc(color), fontWeight:'500', transition:'background 0.2s' }}>
             {name ? name[0].toUpperCase() : '?'}
           </div>
         </div>

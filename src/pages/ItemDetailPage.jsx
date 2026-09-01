@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getItem, addInterest, removeInterest, deleteItem, getComments, addComment, deleteComment, assignItem, getEstateMembers, supabase } from '../lib/supabase'
 
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
+
 export default function ItemDetailPage({ session, profile, onToast }) {
   const { id, itemId } = useParams()
   const navigate = useNavigate()
@@ -188,7 +190,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
               <p style={{ fontSize:'13px', color:'#5C4530', marginBottom:'12px' }}>Hvem får denne?</p>
               {members.map(m => (
                 <button key={m.user_id} onClick={() => handleAssign(m.user_id)} style={{ display:'flex', alignItems:'center', gap:'10px', width:'100%', padding:'10px 14px', background:'#fff', border:'1px solid #B8C8A8', borderRadius:'8px', cursor:'pointer', textAlign:'left', fontFamily:'Karla, sans-serif', marginBottom:'6px' }}>
-                  <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:m.profiles?.avatar_color||'#888', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'11px', color:'#fff', fontWeight:'500' }}>
+                  <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:m.profiles?.avatar_color||'#DCE3D2', border:tc(m.profiles?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'11px', color:tc(m.profiles?.avatar_color||'#DCE3D2'), fontWeight:'500' }}>
                     {(m.profiles?.display_name||'?')[0].toUpperCase()}
                   </div>
                   <span style={{ fontSize:'14px', color:'#3A2F26' }}>{m.profiles?.display_name}</span>
@@ -203,7 +205,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
             <div style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
               {item.interests.map(x => (
                 <div key={x.id} style={{ display:'flex', gap:'14px', alignItems:'flex-start', padding:'14px 16px', background:'#FBF9F5', border:'1px solid #D9CFC0', borderRadius:'10px' }}>
-                  <div style={{ width:'36px', height:'36px', borderRadius:'50%', background:x.profiles?.avatar_color||'#888', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'14px', color:'#fff', fontWeight:'500', flexShrink:0 }}>
+                  <div style={{ width:'36px', height:'36px', borderRadius:'50%', background:x.profiles?.avatar_color||'#DCE3D2', border:tc(x.profiles?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'14px', color:tc(x.profiles?.avatar_color||'#DCE3D2'), fontWeight:'500', flexShrink:0 }}>
                     {(x.profiles?.display_name||'?')[0].toUpperCase()}
                   </div>
                   <div style={{ flex:1 }}>
@@ -245,7 +247,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
             <p style={{ color:'#9C8267', fontSize:'14px', fontStyle:'italic' }}>Ingen kommentarer ennå.</p>
           ) : comments.map(c => (
             <div key={c.id} style={{ display:'flex', gap:'10px', alignItems:'flex-start' }}>
-              <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:c.profiles?.avatar_color||'#888', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', color:'#fff', fontWeight:'500', flexShrink:0 }}>
+              <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:c.profiles?.avatar_color||'#DCE3D2', border:tc(c.profiles?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', color:tc(c.profiles?.avatar_color||'#DCE3D2'), fontWeight:'500', flexShrink:0 }}>
                 {(c.profiles?.display_name||'?')[0].toUpperCase()}
               </div>
               <div style={{ flex:1, background:'#FBF9F5', border:'1px solid #D9CFC0', borderRadius:'10px', padding:'10px 14px' }}>
@@ -263,7 +265,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
           <div ref={commentsEndRef} />
         </div>
         <div style={{ display:'flex', gap:'8px', alignItems:'flex-end' }}>
-          <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:profile?.avatar_color||'#888', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', color:'#fff', fontWeight:'500', flexShrink:0 }}>
+          <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:profile?.avatar_color||'#DCE3D2', border:tc(profile?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', color:tc(profile?.avatar_color||'#DCE3D2'), fontWeight:'500', flexShrink:0 }}>
             {(profile?.display_name||'?')[0].toUpperCase()}
           </div>
           <div style={{ flex:1 }}>

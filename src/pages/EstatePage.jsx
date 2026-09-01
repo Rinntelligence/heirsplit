@@ -1,4 +1,6 @@
 import { useEffect, useLayoutEffect, useState, useRef } from 'react'
+
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEstate, getItems, getCategories, supabase } from '../lib/supabase'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
@@ -325,9 +327,10 @@ function ItemCard({ item, userId, onClick, onDelete, myRole }) {
             {(item.interests||[]).slice(0,4).map(x => (
               <div key={x.id} title={x.profiles?.display_name} style={{
                 width:'20px', height:'20px', borderRadius:'50%',
-                background:x.profiles?.avatar_color||'#ccc',
+                background:x.profiles?.avatar_color||'#DCE3D2',
+                border:tc(x.profiles?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none',
                 display:'flex', alignItems:'center', justifyContent:'center',
-                fontSize:'9px', color:'#fff', fontWeight:'600',
+                fontSize:'9px', color:tc(x.profiles?.avatar_color||'#DCE3D2'), fontWeight:'600',
               }}>{(x.profiles?.display_name||'?')[0].toUpperCase()}</div>
             ))}
             {count === 0 && <span style={{ fontSize:'11px', color:'#C0B0A0', fontStyle:'italic' }}>Ingen ennå</span>}

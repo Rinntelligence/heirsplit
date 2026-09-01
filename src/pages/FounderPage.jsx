@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getAllEstates, getAllProfiles, getAllFeedback, supabase } from '../lib/supabase'
+
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts'
 
 export default function FounderPage({ session }) {
@@ -153,7 +155,7 @@ export default function FounderPage({ session }) {
                 <tr key={p.id} style={{ borderBottom: i<profiles.length-1?'1px solid #E8DFD0':'none' }}>
                   <td style={{ padding:'12px 16px', fontSize:'14px', color:'#3A2F26' }}>
                     <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
-                      <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:p.avatar_color||'#9C8267', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'11px', color:'#fff', fontWeight:'500' }}>{(p.display_name||'?')[0].toUpperCase()}</div>
+                      <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:p.avatar_color||'#DCE3D2', border:tc(p.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'11px', color:tc(p.avatar_color||'#DCE3D2'), fontWeight:'500' }}>{(p.display_name||'?')[0].toUpperCase()}</div>
                       {p.display_name||'—'}
                     </div>
                   </td>
@@ -190,7 +192,7 @@ export default function FounderPage({ session }) {
             <div key={f.id} style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', padding:'20px' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'10px' }}>
                 <div style={{ display:'flex', gap:'10px', alignItems:'center' }}>
-                  <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:'#5F6E52', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'13px', color:'#fff', fontWeight:'500' }}>{(f.profiles?.display_name||'?')[0].toUpperCase()}</div>
+                  <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:f.profiles?.avatar_color||'#DCE3D2', border:tc(f.profiles?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'13px', color:tc(f.profiles?.avatar_color||'#DCE3D2'), fontWeight:'500' }}>{(f.profiles?.display_name||'?')[0].toUpperCase()}</div>
                   <div>
                     <div style={{ fontSize:'14px', color:'#3A2F26', fontWeight:'500' }}>{f.profiles?.display_name||'Ukjent'}</div>
                     <div style={{ fontSize:'12px', color:'#9C8267' }}>{f.profiles?.email} · {new Date(f.created_at).toLocaleDateString('nb-NO')}</div>

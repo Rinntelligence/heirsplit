@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const RELATIONSHIPS = ['Barn', 'Ektefelle / Partner', 'Søsken', 'Forelder', 'Barnebarn', 'Bobestyrer', 'Advokat', 'Rådgiver', 'Annen']
-const AVATAR_COLORS = ['#5F6E52','#8B9A7D','#A97C3F','#7A8B6E','#9C8267']
+const AVATAR_COLORS = ['#DCE3D2','#E8DFD0','#C9AE8E','#A8B598','#8B9A7D','#D9CFC0','#5F6E52','#9C8267']
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
 
 export default function HeirsPage({ session, profile }) {
   const { id } = useParams()
@@ -209,7 +210,7 @@ export default function HeirsPage({ session, profile }) {
 
             return (
               <div key={heir.id} style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', padding:'20px', display:'flex', gap:'16px', alignItems:'flex-start', flexWrap:'wrap' }}>
-                <div style={{ width:'48px', height:'48px', borderRadius:'50%', background:AVATAR_COLORS[i % AVATAR_COLORS.length], display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px', color:'#fff', fontWeight:'500', flexShrink:0 }}>
+                <div style={{ width:'48px', height:'48px', borderRadius:'50%', background:AVATAR_COLORS[i % AVATAR_COLORS.length], border:tc(AVATAR_COLORS[i%AVATAR_COLORS.length])==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px', color:tc(AVATAR_COLORS[i % AVATAR_COLORS.length]), fontWeight:'500', flexShrink:0 }}>
                   {heir.name[0].toUpperCase()}
                 </div>
 

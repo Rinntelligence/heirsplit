@@ -19,6 +19,7 @@ const CHORE_SIZES = [
 ]
 
 const SCORE_COLORS = ['#5F6E52','#8B9A7D','#A97C3F','#7A8B6E','#9C8267','#6E8B87','#8B3A3A']
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
 const getScoreColor = (i) => SCORE_COLORS[i % SCORE_COLORS.length]
 
 export default function GoodwillPage({ session, profile }) {
@@ -130,7 +131,7 @@ export default function GoodwillPage({ session, profile }) {
             {scores.slice(0, 3).map((s, i) => (
               <div key={s.user_id} style={{ display:'flex', alignItems:'center', gap:'8px', justifyContent:'flex-end', marginBottom:'4px' }}>
                 <span style={{ fontSize:'12px', color:'#C8BEA0' }}>#{i+1}</span>
-                <div style={{ width:'20px', height:'20px', borderRadius:'50%', background:s.profiles?.avatar_color||'#888', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', color:'#fff', fontWeight:'600' }}>
+                <div style={{ width:'20px', height:'20px', borderRadius:'50%', background:s.profiles?.avatar_color||'#DCE3D2', border:tc(s.profiles?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', color:tc(s.profiles?.avatar_color||'#DCE3D2'), fontWeight:'600' }}>
                   {(s.profiles?.display_name||'?')[0].toUpperCase()}
                 </div>
                 <span style={{ fontSize:'13px', color:s.user_id===session.user.id?'#FBF9F5':'#C8BEA0', fontWeight:s.user_id===session.user.id?'500':'400' }}>
@@ -164,7 +165,7 @@ export default function GoodwillPage({ session, profile }) {
               <div key={s.user_id} style={{ marginBottom:'16px' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'6px' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-                    <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:s.profiles?.avatar_color||getScoreColor(i), display:'flex', alignItems:'center', justifyContent:'center', fontSize:'13px', color:'#fff', fontWeight:'500' }}>
+                    <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:s.profiles?.avatar_color||getScoreColor(i), border:tc(s.profiles?.avatar_color||getScoreColor(i))==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'13px', color:tc(s.profiles?.avatar_color||getScoreColor(i)), fontWeight:'500' }}>
                       {(s.profiles?.display_name||'?')[0].toUpperCase()}
                     </div>
                     <div>
@@ -296,7 +297,7 @@ export default function GoodwillPage({ session, profile }) {
             <div style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', overflow:'hidden' }}>
               {goodwillLog.map((event, i) => (
                 <div key={event.id} style={{ display:'flex', alignItems:'center', gap:'14px', padding:'14px 18px', borderBottom:i < goodwillLog.length-1?'1px solid #FBF9F5':'none' }}>
-                  <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:event.profiles?.avatar_color||'#9C8267', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', color:'#fff', fontWeight:'500', flexShrink:0 }}>
+                  <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:event.profiles?.avatar_color||'#DCE3D2', border:tc(event.profiles?.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', color:tc(event.profiles?.avatar_color||'#DCE3D2'), fontWeight:'500', flexShrink:0 }}>
                     {(event.profiles?.display_name||'?')[0].toUpperCase()}
                   </div>
                   <div style={{ flex:1 }}>

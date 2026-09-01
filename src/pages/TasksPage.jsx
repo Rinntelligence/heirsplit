@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
+const tc = c => { if(!c)return'#FBF9F5'; const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16); return(0.299*r+0.587*g+0.114*b)/255>0.55?'#3A2F26':'#FBF9F5' }
+
 const DEFAULT_TASKS = [
   { category: 'Umiddelbart', title: 'Registrer dødsfallet', description: 'Innhent dødsattest fra sykehus eller lege', priority: 1 },
   { category: 'Umiddelbart', title: 'Varsle nærmeste familie', description: 'Informer nærmeste familiemedlemmer og nære venner', priority: 2 },
@@ -220,7 +222,7 @@ function TaskRow({ task, members, session, myRole, onToggle, onAssign, onDelete 
           {isOverdue && <span style={{ fontSize: '11px', background: '#E8DFD0', color: '#5C4530', padding: '2px 7px', borderRadius: '20px' }}>Forfalt</span>}
           {task.due_date && !isOverdue && <span style={{ fontSize: '11px', color: '#9C8267' }}>{new Date(task.due_date).toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' })}</span>}
           {task.assigned_to_profile && (
-            <div title={task.assigned_to_profile.display_name} style={{ width: '24px', height: '24px', borderRadius: '50%', background: task.assigned_to_profile.avatar_color || '#9C8267', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#fff', fontWeight: '500' }}>
+            <div title={task.assigned_to_profile.display_name} style={{ width: '24px', height: '24px', borderRadius: '50%', background: task.assigned_to_profile.avatar_color || '#DCE3D2', border:tc(task.assigned_to_profile.avatar_color||'#DCE3D2')==='#3A2F26'?'1px solid #D9CFC0':'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: tc(task.assigned_to_profile.avatar_color || '#DCE3D2'), fontWeight: '500' }}>
               {task.assigned_to_profile.display_name[0].toUpperCase()}
             </div>
           )}
