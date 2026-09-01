@@ -151,8 +151,8 @@ export default function EstatePage({ session, profile, onToast }) {
             border:`1px solid ${s.warn&&s.v>0?'#C8BEA0':'#D9CFC0'}`, borderRadius:'10px', padding:'14px',
             cursor: s.clickStatus?'pointer':'default',
           }}>
-            <div style={{ fontSize:'24px', color:s.warn&&s.v>0?'#5F6E52':'#3A2F26', fontFamily:'Fraunces, serif' }}>{s.v}</div>
-            <div style={{ fontSize:'12px', color:'#9C8267', marginTop:'2px' }}>{s.l}</div>
+            <div style={{ fontSize:'13px', fontWeight:'500', color:'#3A2F26', fontFamily:'Karla, sans-serif', marginBottom:'6px', lineHeight:'1.2' }}>{s.l}</div>
+            <div style={{ fontSize:'18px', color:s.warn&&s.v>0?'#5F6E52':'#9C8267', fontFamily:'Fraunces, serif' }}>{s.v}</div>
           </div>
         ))}
       </div>
