@@ -130,9 +130,6 @@ export default function EstatePage({ session, profile, onToast }) {
           <button onClick={() => navigate(`/estate/${id}/add`)} style={{ padding:'9px 20px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
             + Legg til
           </button>
-          <button onClick={() => navigate(`/estate/${id}/guide`)} style={{ padding:'9px 16px', background:'none', border:'1px solid #D9CFC0', borderRadius:'8px', cursor:'pointer', color:'#5C4530', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
-            Veiviser
-          </button>
         </div>
       </div>
 
@@ -160,7 +157,7 @@ export default function EstatePage({ session, profile, onToast }) {
       {/* Modules */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(160px,1fr))', gap:'10px', marginBottom:'28px' }}>
         {[
-          { path:`/estate/${id}/tasks`, label:'Oppgaveliste', desc:'Steg-for-steg', color:'#DCE3D2', border:'#B8C8A8' },
+          { path:`/estate/${id}/guide`, label:'Veiviser', desc:'For arveprosessen', color:'#DCE3D2', border:'#B8C8A8' },
           { path:`/estate/${id}/documents`, label:'Dokumenthvelv', desc:'Testament, skjøter', color:'#E8EAD8', border:'#C4C8A8' },
           { path:`/estate/${id}/heirs`, label:'Arvinger', desc:'Fordelingskalkulator', color:'#DCE3D2', border:'#B8C8A8' },
           { path:`/estate/${id}/goodwill`, label:'Goodwill', desc:'Oppgaver, rettferdighet', color:'#E8E4D4', border:'#C8BEA0' },
