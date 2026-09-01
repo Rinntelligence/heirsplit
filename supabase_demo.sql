@@ -20,32 +20,53 @@ DECLARE
   kari_id uuid := 'de000001-0000-0000-0000-000000000001';
   lars_id uuid := 'de000002-0000-0000-0000-000000000002';
   mona_id uuid := 'de000003-0000-0000-0000-000000000003';
+  pw text := crypt('Demo1234!', gen_salt('bf'));
 BEGIN
 
-INSERT INTO auth.users (
-  id, aud, role, email, encrypted_password,
-  email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
-  created_at, updated_at, is_sso_user
-) VALUES
-  (kari_id, 'authenticated', 'authenticated',
-   'kari.demo@heirsplit.no', crypt('Demo1234!', gen_salt('bf')),
-   now(), '{"provider":"email","providers":["email"]}'::jsonb,
-   '{"display_name":"Kari Hansen"}'::jsonb, now(), now(), false),
-  (lars_id, 'authenticated', 'authenticated',
-   'lars.demo@heirsplit.no', crypt('Demo1234!', gen_salt('bf')),
-   now(), '{"provider":"email","providers":["email"]}'::jsonb,
-   '{"display_name":"Lars Hansen"}'::jsonb, now(), now(), false),
-  (mona_id, 'authenticated', 'authenticated',
-   'mona.demo@heirsplit.no', crypt('Demo1234!', gen_salt('bf')),
-   now(), '{"provider":"email","providers":["email"]}'::jsonb,
-   '{"display_name":"Mona Hansen-Dahl"}'::jsonb, now(), now(), false)
-ON CONFLICT (id) DO NOTHING;
+  -- instance_id, confirmation_token, recovery_token etc. are required for login to work
+  INSERT INTO auth.users (
+    id, instance_id, aud, role, email, encrypted_password,
+    email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+    created_at, updated_at, is_sso_user,
+    confirmation_token, recovery_token, email_change_token_new, email_change
+  ) VALUES
+    (kari_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+     'kari.demo@heirsplit.no', pw, now(),
+     '{"provider":"email","providers":["email"]}'::jsonb,
+     '{"display_name":"Kari Hansen"}'::jsonb,
+     now(), now(), false, '', '', '', ''),
+    (lars_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+     'lars.demo@heirsplit.no', pw, now(),
+     '{"provider":"email","providers":["email"]}'::jsonb,
+     '{"display_name":"Lars Hansen"}'::jsonb,
+     now(), now(), false, '', '', '', ''),
+    (mona_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+     'mona.demo@heirsplit.no', pw, now(),
+     '{"provider":"email","providers":["email"]}'::jsonb,
+     '{"display_name":"Mona Hansen-Dahl"}'::jsonb,
+     now(), now(), false, '', '', '', '')
+  ON CONFLICT (id) DO UPDATE
+    SET encrypted_password   = EXCLUDED.encrypted_password,
+        email_confirmed_at   = EXCLUDED.email_confirmed_at,
+        confirmation_token   = '',
+        recovery_token       = '',
+        email_change_token_new = '',
+        email_change         = '';
 
-INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at) VALUES
-  (gen_random_uuid(), kari_id, json_build_object('sub', kari_id::text, 'email', 'kari.demo@heirsplit.no')::jsonb, 'email', 'kari.demo@heirsplit.no', now(), now(), now()),
-  (gen_random_uuid(), lars_id, json_build_object('sub', lars_id::text, 'email', 'lars.demo@heirsplit.no')::jsonb, 'email', 'lars.demo@heirsplit.no', now(), now(), now()),
-  (gen_random_uuid(), mona_id, json_build_object('sub', mona_id::text, 'email', 'mona.demo@heirsplit.no')::jsonb, 'email', 'mona.demo@heirsplit.no', now(), now(), now())
-ON CONFLICT DO NOTHING;
+  -- email_verified:true is required for password login
+  INSERT INTO auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at) VALUES
+    (gen_random_uuid(), 'kari.demo@heirsplit.no', kari_id,
+     json_build_object('sub', kari_id::text, 'email', 'kari.demo@heirsplit.no', 'email_verified', true, 'phone_verified', false)::jsonb,
+     'email', now(), now(), now()),
+    (gen_random_uuid(), 'lars.demo@heirsplit.no', lars_id,
+     json_build_object('sub', lars_id::text, 'email', 'lars.demo@heirsplit.no', 'email_verified', true, 'phone_verified', false)::jsonb,
+     'email', now(), now(), now()),
+    (gen_random_uuid(), 'mona.demo@heirsplit.no', mona_id,
+     json_build_object('sub', mona_id::text, 'email', 'mona.demo@heirsplit.no', 'email_verified', true, 'phone_verified', false)::jsonb,
+     'email', now(), now(), now())
+  ON CONFLICT (provider, provider_id) DO UPDATE
+    SET identity_data = EXCLUDED.identity_data,
+        updated_at    = now();
 
 END $$;
 
