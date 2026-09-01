@@ -162,14 +162,16 @@ export default function EstatePage({ session, profile, onToast }) {
           { path:`/estate/${id}/documents`, emoji:'🔒', label:'Dokumenthvelv', desc:'Testament, skjøter', color:'#e8f0fe', border:'#b3c6f5' },
           { path:`/estate/${id}/heirs`, emoji:'👨‍👩‍👧', label:'Arvinger', desc:'Fordelingskalkulator', color:'#f0faf0', border:'#b8ddb8' },
           { path:`/estate/${id}/goodwill`, emoji:'⭐', label:'Goodwill', desc:'Oppgaver, rettferdighet', color:'#fef9e8', border:'#e8d8a0' },
+          ...(contested > 0 ? [{ path:`/estate/${id}/conflicts`, emoji:'🔥', label:'Konfliktløsning', desc:`${contested} ettertraktede`, color:'#fff0ec', border:'#f5c4a8', highlight: true }] : []),
         ].map(mod => (
           <button key={mod.path} onClick={() => navigate(mod.path)} style={{
-            padding:'16px', background:mod.color, border:`1px solid ${mod.border}`,
+            padding:'16px', background:mod.color, border:`1.5px solid ${mod.border}`,
             borderRadius:'10px', cursor:'pointer', textAlign:'left', fontFamily:'DM Sans, sans-serif',
+            boxShadow: mod.highlight ? '0 0 0 2px #c4855a40' : 'none',
           }}>
             <div style={{ fontSize:'24px', marginBottom:'6px' }}>{mod.emoji}</div>
             <div style={{ fontSize:'13px', fontWeight:'500', color:'#1a1410', marginBottom:'2px' }}>{mod.label}</div>
-            <div style={{ fontSize:'11px', color:'#8c7b6b' }}>{mod.desc}</div>
+            <div style={{ fontSize:'11px', color: mod.highlight ? '#c4855a' : '#8c7b6b', fontWeight: mod.highlight ? '500' : '400' }}>{mod.desc}</div>
           </button>
         ))}
       </div>

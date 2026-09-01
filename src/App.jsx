@@ -17,6 +17,7 @@ import DocumentVaultPage from './pages/DocumentVaultPage'
 import HeirsPage from './pages/HeirsPage'
 import GoodwillPage from './pages/GoodwillPage'
 import { JoinPage, PricingPage, CategoriesPage } from './pages/OtherPages'
+import ConflictPage from './pages/ConflictPage'
 import TopBar from './components/TopBar'
 import Toast from './components/Toast'
 import LanguageSwitcher from './components/LanguageSwitcher'
@@ -84,6 +85,7 @@ export default function App() {
           <Route path="/estate/:id/documents" element={<DocumentVaultPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/goodwill" element={<GoodwillPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/heirs" element={<HeirsPage session={session} profile={profile} onToast={showToast} />} />
+          <Route path="/estate/:id/conflicts" element={<ConflictPage session={session} onToast={showToast} />} />
           <Route path="/join/:code" element={<JoinPage session={session} onToast={showToast} />} />
           <Route path="/pricing" element={<PricingPage session={session} />} />
           <Route path="/founder" element={<FounderPage session={session} />} />
