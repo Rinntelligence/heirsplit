@@ -17,7 +17,6 @@ export default function SwipePage({ session, profile, onToast }) {
 
   useEffect(() => {
     getItems(id).then(({ data }) => {
-      // Filter out already-interacted items
       const unswipedItems = (data || []).filter(item =>
         !item.interests?.some(x => x.user_id === session.user.id)
       )
@@ -35,12 +34,12 @@ export default function SwipePage({ session, profile, onToast }) {
     setTimeout(async () => {
       if (type === 'like') {
         await addInterest(currentItem.id, session.user.id, '')
-        onToast('❤️ Interesse registrert!')
+        onToast('Interesse registrert!')
       } else if (type === 'trash') {
         await supabase.from('items').update({ marked_for_disposal: true }).eq('id', currentItem.id)
-        onToast('🗑️ Merket for kast')
+        onToast('Merket for kast')
       } else {
-        onToast('👈 Hoppet over')
+        onToast('Hoppet over')
       }
 
       setOffset({ x: 0, y: 0 })
@@ -53,7 +52,6 @@ export default function SwipePage({ session, profile, onToast }) {
     }, 400)
   }
 
-  // Touch handlers
   const onTouchStart = (e) => {
     startPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
     setDragging(true)
@@ -81,7 +79,6 @@ export default function SwipePage({ session, profile, onToast }) {
     startPos.current = null
   }
 
-  // Mouse handlers for desktop
   const onMouseDown = (e) => {
     startPos.current = { x: e.clientX, y: e.clientY }
     setDragging(true)
@@ -118,42 +115,41 @@ export default function SwipePage({ session, profile, onToast }) {
   }
 
   if (loading) return (
-    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'DM Sans, sans-serif', color:'#a89080' }}>
+    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Karla, sans-serif', color:'#9C8267' }}>
       Laster…
     </div>
   )
 
   if (done || items.length === 0) return (
-    <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:'DM Sans, sans-serif', padding:'20px', textAlign:'center', background:'#f8f5f0' }}>
-      <div style={{ fontSize:'64px', marginBottom:'20px' }}>🎉</div>
-      <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'24px', fontWeight:'400', color:'#1a1410', marginBottom:'12px' }}>
+    <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:'Karla, sans-serif', padding:'20px', textAlign:'center', background:'#FBF9F5' }}>
+      <h2 style={{ fontFamily:'Fraunces, serif', fontSize:'24px', fontWeight:'400', color:'#3A2F26', marginBottom:'12px' }}>
         {items.length === 0 ? 'Ingen gjenstander igjen!' : 'Du har sett alle gjenstander!'}
       </h2>
-      <p style={{ color:'#8c7b6b', marginBottom:'32px' }}>Gå tilbake for å se dine interesser</p>
-      <button onClick={() => navigate(`/estate/${id}`)} style={{ padding:'14px 32px', background:'#1a1410', color:'#f5f0eb', border:'none', borderRadius:'10px', cursor:'pointer', fontSize:'16px', fontFamily:'DM Sans, sans-serif' }}>
+      <p style={{ color:'#9C8267', marginBottom:'32px' }}>Gå tilbake for å se dine interesser</p>
+      <button onClick={() => navigate(`/estate/${id}`)} style={{ padding:'14px 32px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'10px', cursor:'pointer', fontSize:'16px', fontFamily:'Karla, sans-serif' }}>
         ← Tilbake til oversikt
       </button>
     </div>
   )
 
   return (
-    <div style={{ minHeight:'100vh', background:'#f8f5f0', fontFamily:'DM Sans, sans-serif', display:'flex', flexDirection:'column' }}
+    <div style={{ minHeight:'100vh', background:'#FBF9F5', fontFamily:'Karla, sans-serif', display:'flex', flexDirection:'column' }}
       onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}>
 
       {/* Header */}
       <div style={{ padding:'16px 20px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#8c7b6b', cursor:'pointer', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>
+        <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#9C8267', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
           ← Tilbake
         </button>
-        <div style={{ fontSize:'13px', color:'#a89080' }}>
+        <div style={{ fontSize:'13px', color:'#9C8267' }}>
           {index + 1} / {items.length}
         </div>
         <div style={{ width:'60px' }} />
       </div>
 
       {/* Progress bar */}
-      <div style={{ height:'3px', background:'#e8e0d6', margin:'0 20px' }}>
-        <div style={{ height:'100%', background:'#1a1410', width:`${((index) / items.length) * 100}%`, transition:'width 0.3s', borderRadius:'2px' }} />
+      <div style={{ height:'3px', background:'#D9CFC0', margin:'0 20px' }}>
+        <div style={{ height:'100%', background:'#3A2F26', width:`${((index) / items.length) * 100}%`, transition:'width 0.3s', borderRadius:'2px' }} />
       </div>
 
       {/* Card area */}
@@ -161,25 +157,25 @@ export default function SwipePage({ session, profile, onToast }) {
 
         {/* Action indicators */}
         {action === 'like' && (
-          <div style={{ position:'absolute', top:'30px', left:'30px', background:'#7aaa7a', color:'#fff', padding:'8px 20px', borderRadius:'8px', fontSize:'22px', fontWeight:'700', transform:'rotate(-15deg)', zIndex:10, border:'3px solid #5a8a5a' }}>
-            ❤️ VIL HA
+          <div style={{ position:'absolute', top:'30px', left:'30px', background:'#5F6E52', color:'#fff', padding:'8px 20px', borderRadius:'8px', fontSize:'18px', fontWeight:'700', transform:'rotate(-15deg)', zIndex:10, border:'3px solid #4A5A3E' }}>
+            VIL HA
           </div>
         )}
         {action === 'pass' && (
-          <div style={{ position:'absolute', top:'30px', right:'30px', background:'#c0392b', color:'#fff', padding:'8px 20px', borderRadius:'8px', fontSize:'22px', fontWeight:'700', transform:'rotate(15deg)', zIndex:10, border:'3px solid #a02020' }}>
-            👈 PASS
+          <div style={{ position:'absolute', top:'30px', right:'30px', background:'#8B3A3A', color:'#fff', padding:'8px 20px', borderRadius:'8px', fontSize:'18px', fontWeight:'700', transform:'rotate(15deg)', zIndex:10, border:'3px solid #6A2A2A' }}>
+            PASS
           </div>
         )}
         {action === 'trash' && (
-          <div style={{ position:'absolute', top:'30px', left:'50%', transform:'translateX(-50%)', background:'#e67e22', color:'#fff', padding:'8px 20px', borderRadius:'8px', fontSize:'22px', fontWeight:'700', zIndex:10, border:'3px solid #c0621a' }}>
-            🗑️ KAST
+          <div style={{ position:'absolute', top:'30px', left:'50%', transform:'translateX(-50%)', background:'#9C6B30', color:'#fff', padding:'8px 20px', borderRadius:'8px', fontSize:'18px', fontWeight:'700', zIndex:10, border:'3px solid #7A5020' }}>
+            KAST
           </div>
         )}
 
         {/* Next card (background) */}
         {items[index + 1] && (
           <div style={{ position:'absolute', width:'min(380px, 90vw)', background:'#fff', borderRadius:'20px', overflow:'hidden', boxShadow:'0 4px 20px rgba(0,0,0,0.08)', transform:'scale(0.95) translateY(10px)', zIndex:0 }}>
-            <div style={{ height:'320px', background:'#f0ebe4' }} />
+            <div style={{ height:'320px', background:'#E8DFD0' }} />
           </div>
         )}
 
@@ -189,29 +185,29 @@ export default function SwipePage({ session, profile, onToast }) {
           onMouseDown={onMouseDown}>
 
           {/* Image */}
-          <div style={{ height:'320px', background:'#f0ebe4', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+          <div style={{ height:'320px', background:'#E8DFD0', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
             {currentItem.image_url
               ? <img src={currentItem.image_url} alt={currentItem.title} style={{ width:'100%', height:'100%', objectFit:'contain', pointerEvents:'none' }} />
-              : <span style={{ fontSize:'80px' }}>{currentItem.categories?.emoji || '📦'}</span>
+              : <span style={{ fontSize:'48px', color:'#9C8267' }}>{currentItem.categories?.emoji || '·'}</span>
             }
           </div>
 
           {/* Info */}
           <div style={{ padding:'20px' }}>
-            <h2 style={{ fontFamily:'Playfair Display, serif', fontSize:'20px', fontWeight:'400', color:'#1a1410', marginBottom:'6px' }}>{currentItem.title}</h2>
+            <h2 style={{ fontFamily:'Fraunces, serif', fontSize:'20px', fontWeight:'400', color:'#3A2F26', marginBottom:'6px' }}>{currentItem.title}</h2>
             <div style={{ display:'flex', gap:'8px', alignItems:'center', marginBottom:'8px' }}>
-              <span style={{ fontSize:'12px', color:'#a89080', background:'#f5f0eb', padding:'3px 10px', borderRadius:'20px' }}>
+              <span style={{ fontSize:'12px', color:'#9C8267', background:'#E8DFD0', padding:'3px 10px', borderRadius:'20px' }}>
                 {currentItem.categories?.emoji} {currentItem.categories?.label || 'Annet'}
               </span>
               {currentItem.estimated_value && (
-                <span style={{ fontSize:'12px', color:'#c4855a' }}>{currentItem.estimated_value}</span>
+                <span style={{ fontSize:'12px', color:'#5F6E52' }}>{currentItem.estimated_value}</span>
               )}
             </div>
             {currentItem.description && (
-              <p style={{ fontSize:'13px', color:'#6b5c4c', lineHeight:'1.6', margin:0 }}>{currentItem.description.slice(0, 100)}{currentItem.description.length > 100 ? '…' : ''}</p>
+              <p style={{ fontSize:'13px', color:'#5C4530', lineHeight:'1.6', margin:0 }}>{currentItem.description.slice(0, 100)}{currentItem.description.length > 100 ? '…' : ''}</p>
             )}
             {currentItem.interests?.length > 0 && (
-              <p style={{ fontSize:'12px', color:'#c4855a', marginTop:'8px' }}>
+              <p style={{ fontSize:'12px', color:'#5F6E52', marginTop:'8px' }}>
                 {currentItem.interests.length} {currentItem.interests.length === 1 ? 'person' : 'personer'} er interessert
               </p>
             )}
@@ -222,27 +218,30 @@ export default function SwipePage({ session, profile, onToast }) {
       {/* Buttons */}
       <div style={{ padding:'16px 20px 32px', display:'flex', justifyContent:'center', gap:'20px', alignItems:'center' }}>
         <button onClick={() => handleAction('pass')} style={{
-          width:'64px', height:'64px', borderRadius:'50%', border:'2px solid #e0d8d0',
-          background:'#fff', fontSize:'28px', cursor:'pointer',
+          width:'64px', height:'64px', borderRadius:'50%', border:'2px solid #D9CFC0',
+          background:'#fff', cursor:'pointer',
           boxShadow:'0 4px 16px rgba(0,0,0,0.1)', display:'flex', alignItems:'center', justifyContent:'center',
-        }}>👈</button>
+          fontSize:'13px', fontWeight:'600', color:'#8B3A3A', fontFamily:'Karla, sans-serif',
+        }}>Pass</button>
 
         <button onClick={() => handleAction('trash')} style={{
-          width:'52px', height:'52px', borderRadius:'50%', border:'2px solid #e8c4a0',
-          background:'#fff', fontSize:'22px', cursor:'pointer',
+          width:'52px', height:'52px', borderRadius:'50%', border:'2px solid #D9CFC0',
+          background:'#fff', cursor:'pointer',
           boxShadow:'0 4px 16px rgba(0,0,0,0.08)', display:'flex', alignItems:'center', justifyContent:'center',
-        }}>🗑️</button>
+          fontSize:'11px', fontWeight:'600', color:'#9C6B30', fontFamily:'Karla, sans-serif',
+        }}>Kast</button>
 
         <button onClick={() => handleAction('like')} style={{
-          width:'64px', height:'64px', borderRadius:'50%', border:'2px solid #b8ddb8',
-          background:'#fff', fontSize:'28px', cursor:'pointer',
+          width:'64px', height:'64px', borderRadius:'50%', border:'2px solid #B8C8A8',
+          background:'#fff', cursor:'pointer',
           boxShadow:'0 4px 16px rgba(0,0,0,0.1)', display:'flex', alignItems:'center', justifyContent:'center',
-        }}>❤️</button>
+          fontSize:'13px', fontWeight:'600', color:'#5F6E52', fontFamily:'Karla, sans-serif',
+        }}>Vil ha</button>
       </div>
 
       {/* Hint */}
-      <div style={{ textAlign:'center', paddingBottom:'16px', fontSize:'12px', color:'#c0b0a0' }}>
-        Sveip ← pass · ❤️ vil ha · ↑ kast
+      <div style={{ textAlign:'center', paddingBottom:'16px', fontSize:'12px', color:'#D9CFC0' }}>
+        Sveip ← pass · ↑ kast · → vil ha
       </div>
     </div>
   )

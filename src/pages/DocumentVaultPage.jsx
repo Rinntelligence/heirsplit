@@ -3,28 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const FOLDER_TYPES = [
-  { id: 'will',      label: 'Testament',           emoji: '📜', color: '#c4855a' },
-  { id: 'death',     label: 'Dødsattest',           emoji: '🏛️', color: '#6b8fa8' },
-  { id: 'property',  label: 'Eiendom og skjøter',   emoji: '🏠', color: '#7aaa7a' },
-  { id: 'insurance', label: 'Forsikring',            emoji: '🛡️', color: '#b87ab8' },
-  { id: 'tax',       label: 'Skattemeldinger',       emoji: '📊', color: '#c4b06a' },
-  { id: 'id',        label: 'ID-dokumenter',         emoji: '🪪', color: '#6ab8b8' },
-  { id: 'probate',   label: 'Skifte og juridisk',    emoji: '⚖️', color: '#c46a6a' },
-  { id: 'other',     label: 'Annet',                 emoji: '📁', color: '#a89080' },
+  { id: 'will',      label: 'Testament',           color: '#5F6E52' },
+  { id: 'death',     label: 'Dødsattest',           color: '#8B9A7D' },
+  { id: 'property',  label: 'Eiendom og skjøter',   color: '#7A8B6E' },
+  { id: 'insurance', label: 'Forsikring',            color: '#9C8267' },
+  { id: 'tax',       label: 'Skattemeldinger',       color: '#A97C3F' },
+  { id: 'id',        label: 'ID-dokumenter',         color: '#6E8B87' },
+  { id: 'probate',   label: 'Skifte og juridisk',    color: '#8B3A3A' },
+  { id: 'other',     label: 'Annet',                 color: '#9C8267' },
 ]
 
-const FILE_ICONS = {
-  'application/pdf': '📄',
-  'image/jpeg': '🖼️',
-  'image/png': '🖼️',
-  'image/webp': '🖼️',
-  'application/msword': '📝',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '📝',
-  'application/vnd.ms-excel': '📊',
-  'text/plain': '📃',
-}
-
-const getFileIcon = (type) => FILE_ICONS[type] || '📎'
 const formatSize = (bytes) => bytes < 1024*1024 ? `${(bytes/1024).toFixed(0)} KB` : `${(bytes/(1024*1024)).toFixed(1)} MB`
 
 export default function DocumentVaultPage({ session, profile }) {
@@ -99,29 +87,29 @@ export default function DocumentVaultPage({ session, profile }) {
   }, {})
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '28px 16px', fontFamily: 'DM Sans, sans-serif' }}>
-      <button onClick={() => navigate(`/estate/${id}`)} style={{ background: 'none', border: 'none', color: '#8c7b6b', cursor: 'pointer', fontSize: '13px', padding: '0 0 20px', fontFamily: 'DM Sans, sans-serif' }}>← Tilbake til boet</button>
+    <div style={{ maxWidth:'900px', margin:'0 auto', padding:'28px 16px', fontFamily:'Karla, sans-serif' }}>
+      <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#9C8267', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'Karla, sans-serif' }}>← Tilbake til boet</button>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'28px', flexWrap:'wrap', gap:'12px' }}>
         <div>
-          <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '26px', fontWeight: '400', color: '#1a1410', marginBottom: '4px' }}>🔒 Dokumenthvelv</h1>
-          <p style={{ color: '#8c7b6b', fontSize: '14px' }}>Lagre og del viktige dokumenter trygt</p>
+          <h1 style={{ fontFamily:'Fraunces, serif', fontSize:'26px', fontWeight:'400', color:'#3A2F26', marginBottom:'4px' }}>Dokumenthvelv</h1>
+          <p style={{ color:'#9C8267', fontSize:'14px' }}>Lagre og del viktige dokumenter trygt</p>
         </div>
-        <button onClick={() => fileRef.current.click()} style={{ padding: '9px 18px', background: '#1a1410', color: '#f5f0eb', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>
-          ↑ Last opp fil
+        <button onClick={() => fileRef.current.click()} style={{ padding:'9px 18px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
+          Last opp fil
         </button>
-        <input ref={fileRef} type="file" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.txt,.xls,.xlsx" onChange={e => handleFiles(e.target.files)} style={{ display: 'none' }} />
+        <input ref={fileRef} type="file" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.txt,.xls,.xlsx" onChange={e => handleFiles(e.target.files)} style={{ display:'none' }} />
       </div>
 
       {/* Opplastingsfremdrift */}
       {uploading && (
-        <div style={{ background: '#fff', border: '1px solid #e8e0d6', borderRadius: '10px', padding: '16px 20px', marginBottom: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span style={{ fontSize: '14px', color: '#1a1410' }}>Laster opp…</span>
-            <span style={{ fontSize: '14px', color: '#c4855a' }}>{uploadProgress}%</span>
+        <div style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'10px', padding:'16px 20px', marginBottom:'20px' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'8px' }}>
+            <span style={{ fontSize:'14px', color:'#3A2F26' }}>Laster opp…</span>
+            <span style={{ fontSize:'14px', color:'#5F6E52' }}>{uploadProgress}%</span>
           </div>
-          <div style={{ height: '6px', background: '#f0ebe4', borderRadius: '3px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${uploadProgress}%`, background: '#c4855a', borderRadius: '3px', transition: 'width 0.3s ease' }} />
+          <div style={{ height:'6px', background:'#E8DFD0', borderRadius:'3px', overflow:'hidden' }}>
+            <div style={{ height:'100%', width:`${uploadProgress}%`, background:'#5F6E52', borderRadius:'3px', transition:'width 0.3s ease' }} />
           </div>
         </div>
       )}
@@ -132,42 +120,41 @@ export default function DocumentVaultPage({ session, profile }) {
         onDragLeave={() => setDragOver(false)}
         onDrop={e => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files) }}
         style={{
-          border: `2px dashed ${dragOver ? '#c4855a' : '#d4c8b8'}`,
-          borderRadius: '12px', padding: '24px', textAlign: 'center',
-          background: dragOver ? '#fef3e8' : '#faf7f3',
-          marginBottom: '24px', cursor: 'pointer', transition: 'all 0.2s',
+          border:`2px dashed ${dragOver?'#5F6E52':'#D9CFC0'}`,
+          borderRadius:'12px', padding:'24px', textAlign:'center',
+          background: dragOver?'#DCE3D2':'#FBF9F5',
+          marginBottom:'24px', cursor:'pointer', transition:'all 0.2s',
         }}
         onClick={() => fileRef.current.click()}
       >
-        <div style={{ fontSize: '28px', marginBottom: '8px' }}>📂</div>
-        <div style={{ fontSize: '14px', color: '#8c7b6b' }}>Slipp filer her eller klikk for å laste opp</div>
-        <div style={{ fontSize: '12px', color: '#b0a090', marginTop: '4px' }}>PDF, Word, Excel og bilder støttes</div>
+        <div style={{ fontSize:'14px', color:'#9C8267', marginBottom:'4px' }}>Slipp filer her eller klikk for å laste opp</div>
+        <div style={{ fontSize:'12px', color:'#D9CFC0' }}>PDF, Word, Excel og bilder støttes</div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '20px' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'220px 1fr', gap:'20px' }}>
         {/* Mappevalg */}
         <div>
-          <div style={{ background: '#fff', border: '1px solid #e8e0d6', borderRadius: '12px', overflow: 'hidden' }}>
+          <div style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', overflow:'hidden' }}>
             <button onClick={() => setActiveFolder('all')} style={{
-              width: '100%', padding: '12px 16px', background: activeFolder === 'all' ? '#f0ebe4' : 'none',
-              border: 'none', borderBottom: '1px solid #f0ebe4', textAlign: 'left', cursor: 'pointer',
-              fontSize: '14px', color: '#1a1410', fontFamily: 'DM Sans, sans-serif',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              width:'100%', padding:'12px 16px', background:activeFolder==='all'?'#E8DFD0':'none',
+              border:'none', borderBottom:'1px solid #E8DFD0', textAlign:'left', cursor:'pointer',
+              fontSize:'14px', color:'#3A2F26', fontFamily:'Karla, sans-serif',
+              display:'flex', justifyContent:'space-between', alignItems:'center',
             }}>
-              <span>📁 Alle dokumenter</span>
-              <span style={{ fontSize: '12px', color: '#a89080', background: '#f5f0eb', padding: '1px 7px', borderRadius: '20px' }}>{docs.length}</span>
+              <span>Alle dokumenter</span>
+              <span style={{ fontSize:'12px', color:'#9C8267', background:'#FBF9F5', padding:'1px 7px', borderRadius:'20px' }}>{docs.length}</span>
             </button>
             {FOLDER_TYPES.map((folder, i) => (
               <button key={folder.id} onClick={() => setActiveFolder(folder.id)} style={{
-                width: '100%', padding: '11px 16px',
-                background: activeFolder === folder.id ? '#f0ebe4' : 'none',
-                border: 'none', borderBottom: i < FOLDER_TYPES.length - 1 ? '1px solid #f5f0eb' : 'none',
-                textAlign: 'left', cursor: 'pointer', fontSize: '13px', color: '#1a1410',
-                fontFamily: 'DM Sans, sans-serif', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                width:'100%', padding:'11px 16px',
+                background:activeFolder===folder.id?'#E8DFD0':'none',
+                border:'none', borderBottom:i < FOLDER_TYPES.length-1?'1px solid #FBF9F5':'none',
+                textAlign:'left', cursor:'pointer', fontSize:'13px', color:'#3A2F26',
+                fontFamily:'Karla, sans-serif', display:'flex', justifyContent:'space-between', alignItems:'center',
               }}>
-                <span>{folder.emoji} {folder.label}</span>
+                <span>{folder.label}</span>
                 {countByFolder[folder.id] > 0 && (
-                  <span style={{ fontSize: '11px', color: '#a89080', background: '#f5f0eb', padding: '1px 6px', borderRadius: '20px' }}>{countByFolder[folder.id]}</span>
+                  <span style={{ fontSize:'11px', color:'#9C8267', background:'#FBF9F5', padding:'1px 6px', borderRadius:'20px' }}>{countByFolder[folder.id]}</span>
                 )}
               </button>
             ))}
@@ -177,12 +164,11 @@ export default function DocumentVaultPage({ session, profile }) {
         {/* Dokumentliste */}
         <div>
           {filtered.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#a89080' }}>
-              <div style={{ fontSize: '40px', marginBottom: '12px' }}>📂</div>
-              <p>{activeFolder === 'all' ? 'Ingen dokumenter i hvelvet ennå.' : 'Ingen dokumenter i denne mappen ennå.'}</p>
+            <div style={{ textAlign:'center', padding:'60px 20px', color:'#9C8267' }}>
+              <p>{activeFolder==='all'?'Ingen dokumenter i hvelvet ennå.':'Ingen dokumenter i denne mappen ennå.'}</p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
               {filtered.map(doc => (
                 <DocRow key={doc.id} doc={doc} session={session} myRole={myRole}
                   onDelete={() => setConfirmDoc(doc)}
@@ -196,14 +182,14 @@ export default function DocumentVaultPage({ session, profile }) {
 
       {/* Bekreft sletting */}
       {confirmDoc && (
-        <div onClick={() => setConfirmDoc(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '20px' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '14px', padding: '28px', maxWidth: '400px', width: '100%' }}>
-            <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '18px', fontWeight: '400', color: '#1a1410', marginBottom: '8px' }}>Slett dokument</h3>
-            <p style={{ fontSize: '14px', color: '#6b5c4c', marginBottom: '6px' }}>«{confirmDoc.name}»</p>
-            <p style={{ fontSize: '13px', color: '#a89080', marginBottom: '24px' }}>Kan ikke angres.</p>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={() => setConfirmDoc(null)} style={{ flex: 1, padding: '11px', background: 'none', border: '1px solid #e0d8d0', borderRadius: '8px', cursor: 'pointer', color: '#6b5c4c', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>Avbryt</button>
-              <button onClick={() => deleteDoc(confirmDoc)} style={{ flex: 1, padding: '11px', background: '#c46a6a', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>Slett</button>
+        <div onClick={() => setConfirmDoc(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:200, padding:'20px' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background:'#fff', borderRadius:'14px', padding:'28px', maxWidth:'400px', width:'100%' }}>
+            <h3 style={{ fontFamily:'Fraunces, serif', fontSize:'18px', fontWeight:'400', color:'#3A2F26', marginBottom:'8px' }}>Slett dokument</h3>
+            <p style={{ fontSize:'14px', color:'#5C4530', marginBottom:'6px' }}>«{confirmDoc.name}»</p>
+            <p style={{ fontSize:'13px', color:'#9C8267', marginBottom:'24px' }}>Kan ikke angres.</p>
+            <div style={{ display:'flex', gap:'10px' }}>
+              <button onClick={() => setConfirmDoc(null)} style={{ flex:1, padding:'11px', background:'none', border:'1px solid #D9CFC0', borderRadius:'8px', cursor:'pointer', color:'#5C4530', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Avbryt</button>
+              <button onClick={() => deleteDoc(confirmDoc)} style={{ flex:1, padding:'11px', background:'#8B3A3A', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Slett</button>
             </div>
           </div>
         </div>
@@ -211,23 +197,23 @@ export default function DocumentVaultPage({ session, profile }) {
 
       {/* Forhåndsvisning */}
       {preview && (
-        <div onClick={() => setPreview(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '20px' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '14px', padding: '28px', maxWidth: '560px', width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        <div onClick={() => setPreview(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:200, padding:'20px' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background:'#fff', borderRadius:'14px', padding:'28px', maxWidth:'560px', width:'100%' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'20px' }}>
               <div>
-                <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '18px', fontWeight: '400', color: '#1a1410', marginBottom: '4px' }}>{preview.name}</h3>
-                <p style={{ fontSize: '13px', color: '#a89080' }}>Lastet opp av {preview.uploader?.display_name} · {new Date(preview.created_at).toLocaleDateString('nb-NO')}</p>
+                <h3 style={{ fontFamily:'Fraunces, serif', fontSize:'18px', fontWeight:'400', color:'#3A2F26', marginBottom:'4px' }}>{preview.name}</h3>
+                <p style={{ fontSize:'13px', color:'#9C8267' }}>Lastet opp av {preview.uploader?.display_name} · {new Date(preview.created_at).toLocaleDateString('nb-NO')}</p>
               </div>
-              <button onClick={() => setPreview(null)} style={{ background: 'none', border: 'none', fontSize: '24px', color: '#a89080', cursor: 'pointer' }}>×</button>
+              <button onClick={() => setPreview(null)} style={{ background:'none', border:'none', fontSize:'24px', color:'#9C8267', cursor:'pointer' }}>×</button>
             </div>
             {preview.file_type?.startsWith('image/') && (
-              <img src={preview.file_url} alt={preview.name} style={{ width: '100%', borderRadius: '8px', marginBottom: '16px' }} />
+              <img src={preview.file_url} alt={preview.name} style={{ width:'100%', borderRadius:'8px', marginBottom:'16px' }} />
             )}
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <a href={preview.file_url} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '11px', background: '#1a1410', color: '#f5f0eb', borderRadius: '8px', textAlign: 'center', textDecoration: 'none', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>
-                ↗ Åpne / Last ned
+            <div style={{ display:'flex', gap:'10px' }}>
+              <a href={preview.file_url} target="_blank" rel="noopener noreferrer" style={{ flex:1, padding:'11px', background:'#3A2F26', color:'#FBF9F5', borderRadius:'8px', textAlign:'center', textDecoration:'none', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
+                Åpne / Last ned
               </a>
-              <button onClick={() => setPreview(null)} style={{ flex: 1, padding: '11px', background: 'none', border: '1px solid #e0d8d0', borderRadius: '8px', cursor: 'pointer', color: '#6b5c4c', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>Lukk</button>
+              <button onClick={() => setPreview(null)} style={{ flex:1, padding:'11px', background:'none', border:'1px solid #D9CFC0', borderRadius:'8px', cursor:'pointer', color:'#5C4530', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Lukk</button>
             </div>
           </div>
         </div>
@@ -241,33 +227,33 @@ function DocRow({ doc, session, myRole, onDelete, onMove, onPreview }) {
   const folder = FOLDER_TYPES.find(f => f.id === doc.folder) || FOLDER_TYPES[FOLDER_TYPES.length - 1]
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #e8e0d6', borderRadius: '10px', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-      <span style={{ fontSize: '28px', flexShrink: 0 }}>{getFileIcon(doc.file_type)}</span>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '14px', color: '#1a1410', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.name}</div>
-        <div style={{ fontSize: '12px', color: '#a89080', marginTop: '2px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+    <div style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'10px', padding:'14px 16px', display:'flex', alignItems:'center', gap:'12px' }}>
+      <div style={{ width:'8px', height:'40px', borderRadius:'4px', background:folder.color, flexShrink:0 }} />
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ fontSize:'14px', color:'#3A2F26', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{doc.name}</div>
+        <div style={{ fontSize:'12px', color:'#9C8267', marginTop:'2px', display:'flex', gap:'8px', alignItems:'center' }}>
           <span>{doc.uploader?.display_name}</span>
           <span>·</span>
           <span>{formatSize(doc.file_size)}</span>
           <span>·</span>
-          <span>{new Date(doc.created_at).toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' })}</span>
+          <span>{new Date(doc.created_at).toLocaleDateString('nb-NO', { day:'numeric', month:'short' })}</span>
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
-        <span style={{ fontSize: '11px', background: '#f5f0eb', color: '#6b5c4c', padding: '2px 8px', borderRadius: '20px' }}>{folder.emoji} {folder.label}</span>
+      <div style={{ display:'flex', alignItems:'center', gap:'6px', flexShrink:0 }}>
+        <span style={{ fontSize:'11px', background:'#FBF9F5', color:'#5C4530', padding:'2px 8px', borderRadius:'20px' }}>{folder.label}</span>
 
-        <button onClick={onPreview} title="Forhåndsvis" style={{ background: 'none', border: '1px solid #e0d8d0', padding: '5px 9px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#6b5c4c' }}>👁</button>
+        <button onClick={onPreview} title="Forhåndsvis" style={{ background:'none', border:'1px solid #D9CFC0', padding:'5px 9px', borderRadius:'6px', cursor:'pointer', fontSize:'13px', color:'#5C4530' }}>Vis</button>
 
-        <a href={doc.file_url} target="_blank" rel="noopener noreferrer" title="Last ned" style={{ background: 'none', border: '1px solid #e0d8d0', padding: '5px 9px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#6b5c4c', textDecoration: 'none' }}>↓</a>
+        <a href={doc.file_url} target="_blank" rel="noopener noreferrer" title="Last ned" style={{ background:'none', border:'1px solid #D9CFC0', padding:'5px 9px', borderRadius:'6px', cursor:'pointer', fontSize:'13px', color:'#5C4530', textDecoration:'none' }}>↓</a>
 
-        <div style={{ position: 'relative' }}>
-          <button onClick={() => setShowMove(!showMove)} title="Flytt til mappe" style={{ background: 'none', border: '1px solid #e0d8d0', padding: '5px 9px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#6b5c4c' }}>📁</button>
+        <div style={{ position:'relative' }}>
+          <button onClick={() => setShowMove(!showMove)} title="Flytt til mappe" style={{ background:'none', border:'1px solid #D9CFC0', padding:'5px 9px', borderRadius:'6px', cursor:'pointer', fontSize:'13px', color:'#5C4530' }}>Flytt</button>
           {showMove && (
-            <div style={{ position: 'absolute', right: 0, top: '34px', background: '#fff', border: '1px solid #e8e0d6', borderRadius: '10px', minWidth: '180px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 50, overflow: 'hidden' }}>
+            <div style={{ position:'absolute', right:0, top:'34px', background:'#fff', border:'1px solid #D9CFC0', borderRadius:'10px', minWidth:'180px', boxShadow:'0 8px 24px rgba(0,0,0,0.12)', zIndex:50, overflow:'hidden' }}>
               {FOLDER_TYPES.map(f => (
-                <button key={f.id} onClick={() => { onMove(f.id); setShowMove(false) }} style={{ display: 'block', width: '100%', padding: '9px 14px', background: doc.folder === f.id ? '#f0ebe4' : 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '13px', color: '#1a1410', fontFamily: 'DM Sans, sans-serif' }}>
-                  {f.emoji} {f.label}
+                <button key={f.id} onClick={() => { onMove(f.id); setShowMove(false) }} style={{ display:'block', width:'100%', padding:'9px 14px', background:doc.folder===f.id?'#E8DFD0':'none', border:'none', textAlign:'left', cursor:'pointer', fontSize:'13px', color:'#3A2F26', fontFamily:'Karla, sans-serif' }}>
+                  {f.label}
                 </button>
               ))}
             </div>
@@ -275,7 +261,7 @@ function DocRow({ doc, session, myRole, onDelete, onMove, onPreview }) {
         </div>
 
         {(myRole === 'admin' || doc.uploaded_by === session.user.id) && (
-          <button onClick={onDelete} title="Slett" style={{ background: 'none', border: '1px solid #f0d0c8', padding: '5px 9px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#c0a090' }}>×</button>
+          <button onClick={onDelete} title="Slett" style={{ background:'none', border:'1px solid #D9CFC0', padding:'5px 9px', borderRadius:'6px', cursor:'pointer', fontSize:'13px', color:'#8B3A3A' }}>×</button>
         )}
       </div>
     </div>

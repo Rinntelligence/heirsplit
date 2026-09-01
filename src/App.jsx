@@ -12,6 +12,7 @@ import SwipePage from './pages/SwipePage'
 import EditItemPage from './pages/EditItemPage'
 import AdminPage from './pages/AdminPage'
 import FounderPage from './pages/FounderPage'
+import GuidePage from './pages/GuidePage'
 import TasksPage from './pages/TasksPage'
 import DocumentVaultPage from './pages/DocumentVaultPage'
 import HeirsPage from './pages/HeirsPage'
@@ -72,7 +73,7 @@ export default function App() {
 
   return (
     <PlanProvider session={session}>
-      <div style={{ minHeight: '100vh', background: '#f8f5f0' }}>
+      <div style={{ minHeight: '100vh', background: '#FBF9F5' }}>
         <TopBar profile={profile} session={session} onToast={showToast} />
         {toast && <Toast msg={toast.msg} type={toast.type} />}
         <LanguageSwitcher />
@@ -100,6 +101,7 @@ export default function App() {
           <Route path="/join/:code" element={<JoinPage session={session} onToast={showToast} />} />
           <Route path="/pricing" element={<PricingPage session={session} />} />
           <Route path="/founder" element={<FounderPage session={session} />} />
+          <Route path="/estate/:id/guide" element={<GuidePage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
@@ -109,8 +111,8 @@ export default function App() {
 
 function Splash() {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f5f0', fontFamily: "'Playfair Display', serif", color: '#8c7b6b', fontSize: '20px', gap: '12px' }}>
-      <span style={{ fontSize: '32px' }}>⚖️</span> HeirSplit
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FBF9F5', fontFamily: "'Fraunces', serif", color: '#9C8267', fontSize: '20px', gap: '12px' }}>
+      HeirSplit
     </div>
   )
 }

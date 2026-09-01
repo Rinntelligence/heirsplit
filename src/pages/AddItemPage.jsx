@@ -171,15 +171,15 @@ export default function AddItemPage({ session, profile, onToast }) {
   const formatNOK = (n) => n ? new Intl.NumberFormat('nb-NO', { style: 'currency', currency: 'NOK', maximumFractionDigits: 0 }).format(n) : '—'
 
   return (
-    <div style={{ maxWidth: '560px', margin: '0 auto', padding: '20px 16px 100px', fontFamily: 'DM Sans, sans-serif' }}>
-      <button onClick={() => navigate(`/estate/${id}`)} style={{ background: 'none', border: 'none', color: '#8c7b6b', cursor: 'pointer', fontSize: '14px', padding: '0 0 16px', fontFamily: 'DM Sans, sans-serif' }}>
+    <div style={{ maxWidth: '560px', margin: '0 auto', padding: '20px 16px 100px', fontFamily: 'Karla, sans-serif' }}>
+      <button onClick={() => navigate(`/estate/${id}`)} style={{ background: 'none', border: 'none', color: '#9C8267', cursor: 'pointer', fontSize: '14px', padding: '0 0 16px', fontFamily: 'Karla, sans-serif' }}>
         ← Tilbake
       </button>
 
-      <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '24px', fontWeight: '400', color: '#1a1410', marginBottom: '6px' }}>
+      <h1 style={{ fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: '400', color: '#3A2F26', marginBottom: '6px' }}>
         Legg til gjenstand
       </h1>
-      <p style={{ color: '#8c7b6b', fontSize: '14px', marginBottom: '24px' }}>
+      <p style={{ color: '#9C8267', fontSize: '14px', marginBottom: '24px' }}>
         Fyll inn navn og ta gjerne bilde — AI kan identifisere og verdsette automatisk
       </p>
 
@@ -187,12 +187,12 @@ export default function AddItemPage({ session, profile, onToast }) {
 
         {/* Bilder */}
         <div>
-          <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '8px' }}>
+          <label style={{ display: 'block', fontSize: '13px', color: '#9C8267', marginBottom: '8px' }}>
             Bilder (valgfri, maks 5)
           </label>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {imagePreviews.map((src, i) => (
-              <div key={i} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', background: '#f0ebe4' }}>
+              <div key={i} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', background: '#E8DFD0' }}>
                 <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 <button onClick={() => removeImage(i)} style={{
                   position: 'absolute', top: '2px', right: '2px',
@@ -205,12 +205,12 @@ export default function AddItemPage({ session, profile, onToast }) {
             {imagePreviews.length < 5 && (
               <div onClick={() => fileRef.current.click()} style={{
                 width: '80px', height: '80px', borderRadius: '8px',
-                border: '2px dashed #d4c8b8', background: '#f5f0eb',
+                border: '2px dashed #D9CFC0', background: '#FBF9F5',
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', cursor: 'pointer', gap: '4px',
               }}>
-                <span style={{ fontSize: '24px' }}>📸</span>
-                <span style={{ fontSize: '10px', color: '#8c7b6b' }}>Legg til</span>
+                <span style={{ fontSize: '20px', color: '#9C8267' }}>+</span>
+                <span style={{ fontSize: '10px', color: '#9C8267' }}>Legg til</span>
               </div>
             )}
           </div>
@@ -219,18 +219,18 @@ export default function AddItemPage({ session, profile, onToast }) {
           {/* AI-analyseknapp */}
           {imageFiles.length > 0 && (
             <button onClick={analyzeWithAI} disabled={analyzing} style={{
-              marginTop: '10px', padding: '9px 16px', background: analyzing ? '#c0b8b0' : '#c4855a',
+              marginTop: '10px', padding: '9px 16px', background: analyzing ? '#D9CFC0' : '#5F6E52',
               color: '#fff', border: 'none', borderRadius: '8px', cursor: analyzing ? 'not-allowed' : 'pointer',
-              fontSize: '13px', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', gap: '6px',
+              fontSize: '13px', fontFamily: 'Karla, sans-serif', display: 'flex', alignItems: 'center', gap: '6px',
             }}>
-              {analyzing ? '🤖 Analyserer…' : '🤖 Analyser med AI'}
+              {analyzing ? 'Analyserer…' : 'Analyser med AI'}
             </button>
           )}
         </div>
 
         {/* Navn */}
         <div>
-          <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>
+          <label style={{ display: 'block', fontSize: '13px', color: '#9C8267', marginBottom: '6px' }}>
             Navn på gjenstand *
           </label>
           <input
@@ -239,9 +239,9 @@ export default function AddItemPage({ session, profile, onToast }) {
             placeholder="f.eks. Bestemors gyngestol"
             autoFocus
             style={{
-              width: '100%', padding: '14px', border: '1px solid #e0d8d0',
-              borderRadius: '10px', fontSize: '16px', background: '#faf7f3',
-              color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif',
+              width: '100%', padding: '14px', border: '1px solid #D9CFC0',
+              borderRadius: '10px', fontSize: '16px', background: '#FBF9F5',
+              color: '#3A2F26', outline: 'none', fontFamily: 'Karla, sans-serif',
               boxSizing: 'border-box',
             }}
           />
@@ -249,16 +249,16 @@ export default function AddItemPage({ session, profile, onToast }) {
 
         {/* Kategori */}
         <div>
-          <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>
+          <label style={{ display: 'block', fontSize: '13px', color: '#9C8267', marginBottom: '6px' }}>
             Kategori
           </label>
           {categories.length === 0 ? (
-            <p style={{ fontSize: '13px', color: '#a89080' }}>Ingen kategorier ennå — <button onClick={() => navigate(`/estate/${id}/categories`)} style={{ background: 'none', border: 'none', color: '#c4855a', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', fontSize: '13px', padding: 0, textDecoration: 'underline' }}>legg til kategorier</button></p>
+            <p style={{ fontSize: '13px', color: '#9C8267' }}>Ingen kategorier ennå — <button onClick={() => navigate(`/estate/${id}/categories`)} style={{ background: 'none', border: 'none', color: '#5F6E52', cursor: 'pointer', fontFamily: 'Karla, sans-serif', fontSize: '13px', padding: 0, textDecoration: 'underline' }}>legg til kategorier</button></p>
           ) : (
             <select value={categoryId} onChange={e => setCategoryId(e.target.value)} style={{
-              width: '100%', padding: '14px', border: '1px solid #e0d8d0',
-              borderRadius: '10px', fontSize: '16px', background: '#faf7f3',
-              color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif',
+              width: '100%', padding: '14px', border: '1px solid #D9CFC0',
+              borderRadius: '10px', fontSize: '16px', background: '#FBF9F5',
+              color: '#3A2F26', outline: 'none', fontFamily: 'Karla, sans-serif',
             }}>
               {categories.map(c => <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>)}
             </select>
@@ -267,18 +267,18 @@ export default function AddItemPage({ session, profile, onToast }) {
 
         {/* Tilstand */}
         <div>
-          <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '8px' }}>
+          <label style={{ display: 'block', fontSize: '13px', color: '#9C8267', marginBottom: '8px' }}>
             Tilstand
           </label>
           <div style={{ display: 'flex', gap: '8px' }}>
             {[['excellent','Utmerket'],['good','God'],['fair','Middels'],['poor','Dårlig']].map(([val, label]) => (
               <button key={val} onClick={() => setCondition(val)} style={{
                 flex: 1, padding: '10px 4px',
-                border: `2px solid ${condition === val ? '#1a1410' : '#e0d8d0'}`,
+                border: `2px solid ${condition === val ? '#3A2F26' : '#D9CFC0'}`,
                 borderRadius: '8px', cursor: 'pointer', fontSize: '12px',
-                fontFamily: 'DM Sans, sans-serif',
-                background: condition === val ? '#1a1410' : '#fff',
-                color: condition === val ? '#f5f0eb' : '#6b5c4c',
+                fontFamily: 'Karla, sans-serif',
+                background: condition === val ? '#3A2F26' : '#fff',
+                color: condition === val ? '#FBF9F5' : '#5C4530',
               }}>{label}</button>
             ))}
           </div>
@@ -286,7 +286,7 @@ export default function AddItemPage({ session, profile, onToast }) {
 
         {/* Beskrivelse */}
         <div>
-          <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>
+          <label style={{ display: 'block', fontSize: '13px', color: '#9C8267', marginBottom: '6px' }}>
             Beskrivelse (valgfri)
           </label>
           <textarea
@@ -295,9 +295,9 @@ export default function AddItemPage({ session, profile, onToast }) {
             placeholder="Materiale, farge, historikk, minner…"
             rows={3}
             style={{
-              width: '100%', padding: '14px', border: '1px solid #e0d8d0',
-              borderRadius: '10px', fontSize: '15px', fontFamily: 'DM Sans, sans-serif',
-              background: '#faf7f3', color: '#1a1410', resize: 'none',
+              width: '100%', padding: '14px', border: '1px solid #D9CFC0',
+              borderRadius: '10px', fontSize: '15px', fontFamily: 'Karla, sans-serif',
+              background: '#FBF9F5', color: '#3A2F26', resize: 'none',
               outline: 'none', boxSizing: 'border-box',
             }}
           />
@@ -306,48 +306,48 @@ export default function AddItemPage({ session, profile, onToast }) {
         {/* Kjøpspris og -år for verdiestimat */}
         <div style={{ display: 'flex', gap: '10px' }}>
           <div style={{ flex: 1 }}>
-            <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>Kjøpspris (NOK, valgfri)</label>
+            <label style={{ display: 'block', fontSize: '13px', color: '#9C8267', marginBottom: '6px' }}>Kjøpspris (NOK, valgfri)</label>
             <input type="number" value={purchasePrice} onChange={e => setPurchasePrice(e.target.value)} placeholder="f.eks. 5000"
-              style={{ width: '100%', padding: '12px 14px', border: '1px solid #e0d8d0', borderRadius: '10px', fontSize: '15px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '12px 14px', border: '1px solid #D9CFC0', borderRadius: '10px', fontSize: '15px', background: '#FBF9F5', color: '#3A2F26', outline: 'none', fontFamily: 'Karla, sans-serif', boxSizing: 'border-box' }} />
           </div>
           <div style={{ flex: 1 }}>
-            <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '6px' }}>Kjøpsår (valgfri)</label>
+            <label style={{ display: 'block', fontSize: '13px', color: '#9C8267', marginBottom: '6px' }}>Kjøpsår (valgfri)</label>
             <input type="number" value={purchaseYear} onChange={e => setPurchaseYear(e.target.value)} placeholder="f.eks. 2010"
-              style={{ width: '100%', padding: '12px 14px', border: '1px solid #e0d8d0', borderRadius: '10px', fontSize: '15px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '12px 14px', border: '1px solid #D9CFC0', borderRadius: '10px', fontSize: '15px', background: '#FBF9F5', color: '#3A2F26', outline: 'none', fontFamily: 'Karla, sans-serif', boxSizing: 'border-box' }} />
           </div>
         </div>
 
         {/* Verdiestimat-knapp */}
         {title.trim() && (
           <button onClick={getValueEstimate} disabled={estimating} style={{
-            padding: '11px 18px', background: estimating ? '#c0b8b0' : '#6b8fa8',
+            padding: '11px 18px', background: estimating ? '#D9CFC0' : '#8B9A7D',
             color: '#fff', border: 'none', borderRadius: '8px', cursor: estimating ? 'not-allowed' : 'pointer',
-            fontSize: '14px', fontFamily: 'DM Sans, sans-serif',
+            fontSize: '14px', fontFamily: 'Karla, sans-serif',
           }}>
-            {estimating ? '🔍 Estimerer…' : '💰 Få verdiestimat'}
+            {estimating ? 'Estimerer…' : 'Få verdiestimat'}
           </button>
         )}
 
         {/* Verdiestimat-resultat */}
         {aiEstimate && (
-          <div style={{ background: '#f0faf0', border: '1px solid #b8ddb8', borderRadius: '12px', padding: '20px' }}>
-            <div style={{ fontSize: '13px', color: '#3a7a3a', fontWeight: '500', marginBottom: '12px' }}>💰 AI Verdiestimat (NOK)</div>
+          <div style={{ background: '#DCE3D2', border: '1px solid #B8C8A8', borderRadius: '12px', padding: '20px' }}>
+            <div style={{ fontSize: '13px', color: '#3A5A30', fontWeight: '500', marginBottom: '12px' }}>AI Verdiestimat (NOK)</div>
             <div style={{ display: 'flex', gap: '16px', marginBottom: '12px', flexWrap: 'wrap' }}>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '11px', color: '#8c7b6b', marginBottom: '2px' }}>Lavt</div>
-                <div style={{ fontSize: '18px', color: '#1a1410', fontFamily: 'Playfair Display, serif' }}>{formatNOK(aiEstimate.low_nok)}</div>
+                <div style={{ fontSize: '11px', color: '#9C8267', marginBottom: '2px' }}>Lavt</div>
+                <div style={{ fontSize: '18px', color: '#3A2F26', fontFamily: 'Fraunces, serif' }}>{formatNOK(aiEstimate.low_nok)}</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '11px', color: '#8c7b6b', marginBottom: '2px' }}>Mest sannsynlig</div>
-                <div style={{ fontSize: '22px', color: '#3a7a3a', fontFamily: 'Playfair Display, serif', fontWeight: '500' }}>{formatNOK(aiEstimate.likely_nok)}</div>
+                <div style={{ fontSize: '11px', color: '#9C8267', marginBottom: '2px' }}>Mest sannsynlig</div>
+                <div style={{ fontSize: '22px', color: '#3A5A30', fontFamily: 'Fraunces, serif', fontWeight: '500' }}>{formatNOK(aiEstimate.likely_nok)}</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '11px', color: '#8c7b6b', marginBottom: '2px' }}>Høyt</div>
-                <div style={{ fontSize: '18px', color: '#1a1410', fontFamily: 'Playfair Display, serif' }}>{formatNOK(aiEstimate.high_nok)}</div>
+                <div style={{ fontSize: '11px', color: '#9C8267', marginBottom: '2px' }}>Høyt</div>
+                <div style={{ fontSize: '18px', color: '#3A2F26', fontFamily: 'Fraunces, serif' }}>{formatNOK(aiEstimate.high_nok)}</div>
               </div>
             </div>
-            {aiEstimate.reasoning && <p style={{ fontSize: '12px', color: '#6b5c4c', lineHeight: '1.5', marginBottom: '0' }}>{aiEstimate.reasoning}</p>}
-            <p style={{ fontSize: '11px', color: '#a89080', marginTop: '8px', marginBottom: 0 }}>⚠️ Estimater er kun veiledende — ikke profesjonell takst.</p>
+            {aiEstimate.reasoning && <p style={{ fontSize: '12px', color: '#5C4530', lineHeight: '1.5', marginBottom: '0' }}>{aiEstimate.reasoning}</p>}
+            <p style={{ fontSize: '11px', color: '#9C8267', marginTop: '8px', marginBottom: 0 }}>Estimater er kun veiledende — ikke profesjonell takst.</p>
           </div>
         )}
 
@@ -357,7 +357,7 @@ export default function AddItemPage({ session, profile, onToast }) {
       <div style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
         padding: '16px', background: '#fff',
-        borderTop: '1px solid #e8e0d6',
+        borderTop: '1px solid #D9CFC0',
         boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
         zIndex: 100,
       }}>
@@ -367,10 +367,10 @@ export default function AddItemPage({ session, profile, onToast }) {
           style={{
             width: '100%', maxWidth: '560px', display: 'block', margin: '0 auto',
             padding: '16px',
-            background: title.trim() ? '#1a1410' : '#c0b8b0',
-            color: '#f5f0eb', border: 'none', borderRadius: '10px',
+            background: title.trim() ? '#3A2F26' : '#D9CFC0',
+            color: '#FBF9F5', border: 'none', borderRadius: '10px',
             cursor: title.trim() ? 'pointer' : 'not-allowed',
-            fontSize: '16px', fontFamily: 'DM Sans, sans-serif', fontWeight: '500',
+            fontSize: '16px', fontFamily: 'Karla, sans-serif', fontWeight: '500',
           }}
         >
           {saving ? 'Lagrer…' : '✓ Lagre gjenstand'}

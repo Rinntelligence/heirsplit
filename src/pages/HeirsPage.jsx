@@ -3,14 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const RELATIONSHIPS = ['Barn', 'Ektefelle / Partner', 'Søsken', 'Forelder', 'Barnebarn', 'Bobestyrer', 'Advokat', 'Rådgiver', 'Annen']
-const REL_EMOJI = { 'Barn': '👧', 'Ektefelle / Partner': '💑', 'Søsken': '👫', 'Forelder': '👨‍👩‍👧', 'Barnebarn': '👶', 'Bobestyrer': '⚖️', 'Advokat': '👨‍💼', 'Rådgiver': '🧑‍💼', 'Annen': '👤' }
+const AVATAR_COLORS = ['#5F6E52','#8B9A7D','#A97C3F','#7A8B6E','#9C8267']
 
 export default function HeirsPage({ session, profile }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [heirs, setHeirs] = useState([])
   const [totalValue, setTotalValue] = useState('')
-  const [splitMode, setSplitMode] = useState('equal') // equal | custom | assigned
+  const [splitMode, setSplitMode] = useState('equal')
   const [showAdd, setShowAdd] = useState(false)
   const [newHeir, setNewHeir] = useState({ name: '', email: '', relationship: 'Barn', notes: '', percentage: '' })
   const [myRole, setMyRole] = useState('member')
@@ -78,60 +78,60 @@ export default function HeirsPage({ session, profile }) {
     return new Intl.NumberFormat('nb-NO', { style: 'currency', currency: 'NOK', maximumFractionDigits: 0 }).format(n)
   }
 
-  if (loading) return <div style={{ padding: '80px', textAlign: 'center', color: '#a89080', fontFamily: 'DM Sans, sans-serif' }}>Laster…</div>
+  if (loading) return <div style={{ padding:'80px', textAlign:'center', color:'#9C8267', fontFamily:'Karla, sans-serif' }}>Laster…</div>
 
   return (
-    <div style={{ maxWidth: '760px', margin: '0 auto', padding: '28px 16px', fontFamily: 'DM Sans, sans-serif' }}>
-      <button onClick={() => navigate(`/estate/${id}`)} style={{ background: 'none', border: 'none', color: '#8c7b6b', cursor: 'pointer', fontSize: '13px', padding: '0 0 20px', fontFamily: 'DM Sans, sans-serif' }}>← Tilbake til boet</button>
+    <div style={{ maxWidth:'760px', margin:'0 auto', padding:'28px 16px', fontFamily:'Karla, sans-serif' }}>
+      <button onClick={() => navigate(`/estate/${id}`)} style={{ background:'none', border:'none', color:'#9C8267', cursor:'pointer', fontSize:'13px', padding:'0 0 20px', fontFamily:'Karla, sans-serif' }}>← Tilbake til boet</button>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'28px', flexWrap:'wrap', gap:'12px' }}>
         <div>
-          <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '26px', fontWeight: '400', color: '#1a1410', marginBottom: '4px' }}>👨‍👩‍👧 Arvinger og fordeling</h1>
-          <p style={{ color: '#8c7b6b', fontSize: '14px' }}>Administrer arvinger og beregn hvordan boet fordeles</p>
+          <h1 style={{ fontFamily:'Fraunces, serif', fontSize:'26px', fontWeight:'400', color:'#3A2F26', marginBottom:'4px' }}>Arvinger og fordeling</h1>
+          <p style={{ color:'#9C8267', fontSize:'14px' }}>Administrer arvinger og beregn hvordan boet fordeles</p>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} style={{ padding: '9px 18px', background: '#1a1410', color: '#f5f0eb', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>
+        <button onClick={() => setShowAdd(!showAdd)} style={{ padding:'9px 18px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
           + Legg til arving
         </button>
       </div>
 
       {/* Fordelingskalkulator */}
-      <div style={{ background: '#fff', border: '1px solid #e8e0d6', borderRadius: '12px', padding: '24px', marginBottom: '20px' }}>
-        <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '18px', fontWeight: '400', color: '#1a1410', marginBottom: '20px' }}>Fordelingskalkulator</h2>
+      <div style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', padding:'24px', marginBottom:'20px' }}>
+        <h2 style={{ fontFamily:'Fraunces, serif', fontSize:'18px', fontWeight:'400', color:'#3A2F26', marginBottom:'20px' }}>Fordelingskalkulator</h2>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '8px' }}>Total boeverdi (omtrentlig)</label>
-          <div style={{ position: 'relative', maxWidth: '280px' }}>
-            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#8c7b6b', fontSize: '15px' }}>kr</span>
+        <div style={{ marginBottom:'20px' }}>
+          <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'8px' }}>Total boeverdi (omtrentlig)</label>
+          <div style={{ position:'relative', maxWidth:'280px' }}>
+            <span style={{ position:'absolute', left:'14px', top:'50%', transform:'translateY(-50%)', color:'#9C8267', fontSize:'15px' }}>kr</span>
             <input type="number" value={totalValue} onChange={e => setTotalValue(e.target.value)} placeholder="f.eks. 500000"
-              style={{ width: '100%', padding: '11px 14px 11px 38px', border: '1px solid #e0d8d0', borderRadius: '8px', fontSize: '15px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+              style={{ width:'100%', padding:'11px 14px 11px 38px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
           </div>
-          <p style={{ fontSize: '12px', color: '#a89080', marginTop: '6px' }}>Dette er kun for beregning — ikke juridisk bindende</p>
+          <p style={{ fontSize:'12px', color:'#9C8267', marginTop:'6px' }}>Dette er kun for beregning — ikke juridisk bindende</p>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', fontSize: '13px', color: '#8c7b6b', marginBottom: '10px' }}>Hvordan fordele</label>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div style={{ marginBottom:'20px' }}>
+          <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'10px' }}>Hvordan fordele</label>
+          <div style={{ display:'flex', gap:'8px', flexWrap:'wrap' }}>
             {[
-              { id: 'equal', label: '⚖️ Lik fordeling', desc: 'Alle får like mye' },
-              { id: 'custom', label: '📊 Egendefinert %', desc: 'Sett prosenter manuelt' },
-              { id: 'assigned', label: '🎯 Per gjenstand', desc: 'Basert på tildelte gjenstander' },
+              { id: 'equal', label: 'Lik fordeling', desc: 'Alle får like mye' },
+              { id: 'custom', label: 'Egendefinert %', desc: 'Sett prosenter manuelt' },
+              { id: 'assigned', label: 'Per gjenstand', desc: 'Basert på tildelte gjenstander' },
             ].map(opt => (
               <button key={opt.id} onClick={() => setSplitMode(opt.id)} style={{
-                padding: '10px 16px', border: `2px solid ${splitMode === opt.id ? '#1a1410' : '#e0d8d0'}`,
-                borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontFamily: 'DM Sans, sans-serif',
-                background: splitMode === opt.id ? '#1a1410' : '#fff',
-                color: splitMode === opt.id ? '#f5f0eb' : '#1a1410',
-                textAlign: 'left',
+                padding:'10px 16px', border:`2px solid ${splitMode===opt.id?'#3A2F26':'#D9CFC0'}`,
+                borderRadius:'8px', cursor:'pointer', fontSize:'13px', fontFamily:'Karla, sans-serif',
+                background: splitMode===opt.id?'#3A2F26':'#fff',
+                color: splitMode===opt.id?'#FBF9F5':'#3A2F26',
+                textAlign:'left',
               }}>
-                <div style={{ fontWeight: '500' }}>{opt.label}</div>
-                <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '2px' }}>{opt.desc}</div>
+                <div style={{ fontWeight:'500' }}>{opt.label}</div>
+                <div style={{ fontSize:'11px', opacity:0.7, marginTop:'2px' }}>{opt.desc}</div>
               </button>
             ))}
           </div>
         </div>
 
         {myRole === 'admin' && (
-          <button onClick={saveSettings} disabled={saving} style={{ padding: '10px 20px', background: '#1a1410', color: '#f5f0eb', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>
+          <button onClick={saveSettings} disabled={saving} style={{ padding:'10px 20px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
             {saving ? 'Lagrer…' : 'Lagre innstillinger'}
           </button>
         )}
@@ -139,107 +139,106 @@ export default function HeirsPage({ session, profile }) {
 
       {/* Legg til arving */}
       {showAdd && (
-        <div style={{ background: '#fff', border: '1px solid #e8e0d6', borderRadius: '12px', padding: '24px', marginBottom: '20px' }}>
-          <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '16px', fontWeight: '400', color: '#1a1410', marginBottom: '16px' }}>Legg til arving</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <div style={{ flex: 1, minWidth: '160px' }}>
-                <label style={{ display: 'block', fontSize: '12px', color: '#8c7b6b', marginBottom: '5px' }}>Fullt navn *</label>
+        <div style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', padding:'24px', marginBottom:'20px' }}>
+          <h3 style={{ fontFamily:'Fraunces, serif', fontSize:'16px', fontWeight:'400', color:'#3A2F26', marginBottom:'16px' }}>Legg til arving</h3>
+          <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
+            <div style={{ display:'flex', gap:'10px', flexWrap:'wrap' }}>
+              <div style={{ flex:1, minWidth:'160px' }}>
+                <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>Fullt navn *</label>
                 <input value={newHeir.name} onChange={e => setNewHeir(p => ({ ...p, name: e.target.value }))} placeholder="f.eks. Kari Hansen"
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #e0d8d0', borderRadius: '8px', fontSize: '14px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+                  style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
               </div>
-              <div style={{ flex: 1, minWidth: '160px' }}>
-                <label style={{ display: 'block', fontSize: '12px', color: '#8c7b6b', marginBottom: '5px' }}>E-post (for å invitere)</label>
+              <div style={{ flex:1, minWidth:'160px' }}>
+                <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>E-post (for å invitere)</label>
                 <input type="email" value={newHeir.email} onChange={e => setNewHeir(p => ({ ...p, email: e.target.value }))} placeholder="kari@epost.no"
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #e0d8d0', borderRadius: '8px', fontSize: '14px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+                  style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ display: 'block', fontSize: '12px', color: '#8c7b6b', marginBottom: '5px' }}>Relasjon</label>
+            <div style={{ display:'flex', gap:'10px', flexWrap:'wrap' }}>
+              <div style={{ flex:1 }}>
+                <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>Relasjon</label>
                 <select value={newHeir.relationship} onChange={e => setNewHeir(p => ({ ...p, relationship: e.target.value }))}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #e0d8d0', borderRadius: '8px', fontSize: '14px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif' }}>
-                  {RELATIONSHIPS.map(r => <option key={r} value={r}>{REL_EMOJI[r]} {r}</option>)}
+                  style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif' }}>
+                  {RELATIONSHIPS.map(r => <option key={r} value={r}>{r}</option>)}
                 </select>
               </div>
               {splitMode === 'custom' && (
-                <div style={{ width: '120px' }}>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#8c7b6b', marginBottom: '5px' }}>Andel %</label>
+                <div style={{ width:'120px' }}>
+                  <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>Andel %</label>
                   <input type="number" min="0" max="100" value={newHeir.percentage} onChange={e => setNewHeir(p => ({ ...p, percentage: e.target.value }))} placeholder="f.eks. 25"
-                    style={{ width: '100%', padding: '10px 12px', border: '1px solid #e0d8d0', borderRadius: '8px', fontSize: '14px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+                    style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
                 </div>
               )}
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '12px', color: '#8c7b6b', marginBottom: '5px' }}>Notater</label>
+              <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>Notater</label>
               <input value={newHeir.notes} onChange={e => setNewHeir(p => ({ ...p, notes: e.target.value }))} placeholder="Relevante notater…"
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #e0d8d0', borderRadius: '8px', fontSize: '14px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', boxSizing: 'border-box' }} />
+                style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={() => setShowAdd(false)} style={{ flex: 1, padding: '10px', background: 'none', border: '1px solid #e0d8d0', borderRadius: '8px', cursor: 'pointer', color: '#6b5c4c', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>Avbryt</button>
-              <button onClick={addHeir} disabled={!newHeir.name.trim()} style={{ flex: 2, padding: '10px', background: newHeir.name.trim() ? '#1a1410' : '#c0b8b0', color: '#f5f0eb', border: 'none', borderRadius: '8px', cursor: newHeir.name.trim() ? 'pointer' : 'not-allowed', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>Legg til arving</button>
+            <div style={{ display:'flex', gap:'10px' }}>
+              <button onClick={() => setShowAdd(false)} style={{ flex:1, padding:'10px', background:'none', border:'1px solid #D9CFC0', borderRadius:'8px', cursor:'pointer', color:'#5C4530', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Avbryt</button>
+              <button onClick={addHeir} disabled={!newHeir.name.trim()} style={{ flex:2, padding:'10px', background:newHeir.name.trim()?'#3A2F26':'#D9CFC0', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:newHeir.name.trim()?'pointer':'not-allowed', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Legg til arving</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Valideringsadvarsel for egendefinert % */}
+      {/* Valideringsadvarsel */}
       {splitMode === 'custom' && heirs.length > 0 && !customValid && (
-        <div style={{ padding: '12px 16px', background: '#fef3e8', border: '1px solid #e8c4a0', borderRadius: '8px', marginBottom: '16px', fontSize: '13px', color: '#854F0B' }}>
-          ⚠️ Prosentene summeres til {totalCustom.toFixed(1)}% — må være nøyaktig 100%
+        <div style={{ padding:'12px 16px', background:'#E8DFD0', border:'1px solid #C8BEA0', borderRadius:'8px', marginBottom:'16px', fontSize:'13px', color:'#5C4530' }}>
+          Prosentene summeres til {totalCustom.toFixed(1)}% — må være nøyaktig 100%
         </div>
       )}
       {splitMode === 'custom' && heirs.length > 0 && customValid && (
-        <div style={{ padding: '12px 16px', background: '#f0faf0', border: '1px solid #b8ddb8', borderRadius: '8px', marginBottom: '16px', fontSize: '13px', color: '#3a7a3a' }}>
-          ✓ Prosentene summeres til 100% — ser bra ut!
+        <div style={{ padding:'12px 16px', background:'#DCE3D2', border:'1px solid #B8C8A8', borderRadius:'8px', marginBottom:'16px', fontSize:'13px', color:'#3A5A30' }}>
+          Prosentene summeres til 100% — ser bra ut
         </div>
       )}
 
       {/* Arvingsliste */}
       {heirs.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#a89080' }}>
-          <div style={{ fontSize: '48px', marginBottom: '12px' }}>👨‍👩‍👧</div>
-          <p style={{ marginBottom: '20px' }}>Ingen arvinger lagt til ennå.</p>
-          <button onClick={() => setShowAdd(true)} style={{ padding: '11px 24px', background: '#1a1410', color: '#f5f0eb', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'DM Sans, sans-serif' }}>Legg til første arving</button>
+        <div style={{ textAlign:'center', padding:'60px 20px', color:'#9C8267' }}>
+          <p style={{ marginBottom:'20px' }}>Ingen arvinger lagt til ennå.</p>
+          <button onClick={() => setShowAdd(true)} style={{ padding:'11px 24px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Legg til første arving</button>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
           {heirs.map((heir, i) => {
             const share = getShare(heir)
             const pct = splitMode === 'equal' ? (heirs.length > 0 ? (100 / heirs.length).toFixed(1) : 0) : (heir.percentage || 0)
 
             return (
-              <div key={heir.id} style={{ background: '#fff', border: '1px solid #e8e0d6', borderRadius: '12px', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: ['#c4855a','#6b8fa8','#7aaa7a','#b87ab8','#c4b06a'][i % 5], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', color: '#fff', fontWeight: '500', flexShrink: 0 }}>
+              <div key={heir.id} style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', padding:'20px', display:'flex', gap:'16px', alignItems:'flex-start', flexWrap:'wrap' }}>
+                <div style={{ width:'48px', height:'48px', borderRadius:'50%', background:AVATAR_COLORS[i % AVATAR_COLORS.length], display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px', color:'#fff', fontWeight:'500', flexShrink:0 }}>
                   {heir.name[0].toUpperCase()}
                 </div>
 
-                <div style={{ flex: 1, minWidth: '160px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '15px', fontWeight: '500', color: '#1a1410' }}>{heir.name}</span>
-                    <span style={{ fontSize: '12px', background: '#f5f0eb', color: '#6b5c4c', padding: '2px 8px', borderRadius: '20px' }}>
-                      {REL_EMOJI[heir.relationship]} {heir.relationship}
+                <div style={{ flex:1, minWidth:'160px' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:'8px', marginBottom:'4px', flexWrap:'wrap' }}>
+                    <span style={{ fontSize:'15px', fontWeight:'500', color:'#3A2F26' }}>{heir.name}</span>
+                    <span style={{ fontSize:'12px', background:'#E8DFD0', color:'#5C4530', padding:'2px 8px', borderRadius:'20px' }}>
+                      {heir.relationship}
                     </span>
                   </div>
-                  {heir.email && <div style={{ fontSize: '12px', color: '#a89080', marginBottom: '4px' }}>✉️ {heir.email}</div>}
-                  {heir.notes && <div style={{ fontSize: '13px', color: '#6b5c4c', fontStyle: 'italic' }}>{heir.notes}</div>}
+                  {heir.email && <div style={{ fontSize:'12px', color:'#9C8267', marginBottom:'4px' }}>{heir.email}</div>}
+                  {heir.notes && <div style={{ fontSize:'13px', color:'#5C4530', fontStyle:'italic' }}>{heir.notes}</div>}
                 </div>
 
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <div style={{ textAlign:'right', flexShrink:0 }}>
                   {splitMode === 'custom' ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:'6px', marginBottom:'4px' }}>
                       <input type="number" min="0" max="100" value={heir.percentage || ''} onChange={e => updateLocalPercentage(heir.id, e.target.value)}
-                        style={{ width: '70px', padding: '6px 10px', border: '1px solid #e0d8d0', borderRadius: '6px', fontSize: '14px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif', textAlign: 'right' }} />
-                      <span style={{ fontSize: '14px', color: '#8c7b6b' }}>%</span>
+                        style={{ width:'70px', padding:'6px 10px', border:'1px solid #D9CFC0', borderRadius:'6px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', textAlign:'right' }} />
+                      <span style={{ fontSize:'14px', color:'#9C8267' }}>%</span>
                     </div>
                   ) : (
-                    <div style={{ fontSize: '18px', color: '#c4855a', fontFamily: 'Playfair Display, serif', marginBottom: '4px' }}>{pct}%</div>
+                    <div style={{ fontSize:'18px', color:'#5F6E52', fontFamily:'Fraunces, serif', marginBottom:'4px' }}>{pct}%</div>
                   )}
                   {share !== null && (
-                    <div style={{ fontSize: '13px', color: '#1a1410', fontWeight: '500' }}>{formatMoney(share)}</div>
+                    <div style={{ fontSize:'13px', color:'#3A2F26', fontWeight:'500' }}>{formatMoney(share)}</div>
                   )}
                   {myRole === 'admin' && (
-                    <button onClick={() => removeHeir(heir.id)} style={{ fontSize: '11px', color: '#c0a090', background: 'none', border: 'none', cursor: 'pointer', marginTop: '6px', fontFamily: 'DM Sans, sans-serif' }}>Fjern</button>
+                    <button onClick={() => removeHeir(heir.id)} style={{ fontSize:'11px', color:'#9C8267', background:'none', border:'none', cursor:'pointer', marginTop:'6px', fontFamily:'Karla, sans-serif' }}>Fjern</button>
                   )}
                 </div>
               </div>
@@ -247,16 +246,16 @@ export default function HeirsPage({ session, profile }) {
           })}
 
           {total > 0 && (
-            <div style={{ background: '#f0ebe4', border: '1px solid #d4c8b8', borderRadius: '10px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '14px', fontWeight: '500', color: '#1a1410' }}>Total boeverdi</span>
-              <span style={{ fontSize: '22px', fontFamily: 'Playfair Display, serif', color: '#1a1410' }}>{formatMoney(total)}</span>
+            <div style={{ background:'#E8DFD0', border:'1px solid #D9CFC0', borderRadius:'10px', padding:'16px 20px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <span style={{ fontSize:'14px', fontWeight:'500', color:'#3A2F26' }}>Total boeverdi</span>
+              <span style={{ fontSize:'22px', fontFamily:'Fraunces, serif', color:'#3A2F26' }}>{formatMoney(total)}</span>
             </div>
           )}
         </div>
       )}
 
-      <div style={{ marginTop: '24px', padding: '16px 20px', background: '#f5f0eb', border: '1px solid #e0d8d0', borderRadius: '10px', fontSize: '12px', color: '#8c7b6b', lineHeight: '1.6' }}>
-        ⚠️ <strong>Ansvarsfraskrivelse:</strong> Disse beregningene er kun til informasjonsformål og utgjør ikke juridisk eller finansiell rådgivning. Konsulter en kvalifisert advokat før du tar fordelingsbeslutninger.
+      <div style={{ marginTop:'24px', padding:'16px 20px', background:'#FBF9F5', border:'1px solid #D9CFC0', borderRadius:'10px', fontSize:'12px', color:'#9C8267', lineHeight:'1.6' }}>
+        <strong>Ansvarsfraskrivelse:</strong> Disse beregningene er kun til informasjonsformål og utgjør ikke juridisk eller finansiell rådgivning. Konsulter en kvalifisert advokat før du tar fordelingsbeslutninger.
       </div>
     </div>
   )
