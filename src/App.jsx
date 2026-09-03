@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import { PlanProvider } from './hooks/usePlan'
 import LoginPage from './pages/LoginPage'
+import LandingPage from './pages/LandingPage'
 import ProfileSetupPage from './pages/ProfileSetupPage'
 import EstatesPage from './pages/EstatesPage'
 import EstatePage from './pages/EstatePage'
@@ -61,12 +62,16 @@ export default function App() {
 
   if (session === undefined) return <Splash />
 
+  const isDemo = session?.user?.email === 'mona.demo@heirsplit.no'
+
   if (!session) {
     return (
       <Routes>
+        <Route path="/" element={<LandingPage onToast={showToast} />} />
+        <Route path="/logg-inn" element={<LoginPage onToast={showToast} />} />
         <Route path="/join/:code" element={<JoinPage onToast={showToast} />} />
         <Route path="/pricing" element={<PricingPage />} />
-        <Route path="*" element={<LoginPage onToast={showToast} />} />
+        <Route path="*" element={<LandingPage onToast={showToast} />} />
       </Routes>
     )
   }
@@ -75,22 +80,27 @@ export default function App() {
     <PlanProvider session={session}>
       <div style={{ minHeight: '100vh', background: '#FBF9F5' }}>
         <TopBar profile={profile} session={session} onToast={showToast} />
+        {isDemo && (
+          <div style={{ background: '#DCE3D2', borderBottom: '1px solid #B8C8A8', padding: '8px 20px', textAlign: 'center', fontSize: '13px', color: '#3A5A30', fontFamily: 'Karla, sans-serif' }}>
+            Du ser på en <strong>demo</strong> — Mona sitt bo. Redigering er ikke tilgjengelig.
+          </div>
+        )}
         {toast && <Toast msg={toast.msg} type={toast.type} />}
         <LanguageSwitcher />
-        <FeedbackWidget session={session} />
+        {!isDemo && <FeedbackWidget session={session} />}
         <Routes>
-          <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} />} />
+          <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} isDemo={isDemo} />} />
           <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => {
             setProfile(p)
             const pendingCode = localStorage.getItem('pendingJoinCode')
             if (pendingCode) { localStorage.removeItem('pendingJoinCode'); navigate(`/join/${pendingCode}`) }
             else navigate('/')
           }} onToast={showToast} />} />
-          <Route path="/estate/:id" element={<EstatePage session={session} profile={profile} onToast={showToast} />} />
-          <Route path="/estate/:id/item/:itemId" element={<ItemDetailPage session={session} profile={profile} onToast={showToast} />} />
-          <Route path="/estate/:id/swipe" element={<SwipePage session={session} profile={profile} onToast={showToast} />} />
-          <Route path="/estate/:id/item/:itemId/edit" element={<EditItemPage session={session} profile={profile} onToast={showToast} />} />
-          <Route path="/estate/:id/add" element={<AddItemPage session={session} profile={profile} onToast={showToast} />} />
+          <Route path="/estate/:id" element={<EstatePage session={session} profile={profile} onToast={showToast} isDemo={isDemo} />} />
+          <Route path="/estate/:id/item/:itemId" element={<ItemDetailPage session={session} profile={profile} onToast={showToast} isDemo={isDemo} />} />
+          <Route path="/estate/:id/swipe" element={<SwipePage session={session} profile={profile} onToast={showToast} isDemo={isDemo} />} />
+          <Route path="/estate/:id/item/:itemId/edit" element={isDemo ? <Navigate to="/" /> : <EditItemPage session={session} profile={profile} onToast={showToast} />} />
+          <Route path="/estate/:id/add" element={isDemo ? <Navigate to="/" /> : <AddItemPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/admin" element={<AdminPage session={session} profile={profile} onToast={showToast} />} />
           <Route path="/estate/:id/categories" element={<CategoriesPage session={session} onToast={showToast} />} />
           <Route path="/estate/:id/tasks" element={<TasksPage session={session} profile={profile} onToast={showToast} />} />

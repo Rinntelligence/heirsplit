@@ -7,7 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 
 const PALETTE = ['#5F6E52','#8B9A7D','#A97C3F','#7A8B6E','#9C8267','#6E8B87']
 
-export default function EstatePage({ session, profile, onToast }) {
+export default function EstatePage({ session, profile, onToast, isDemo }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [estate, setEstate] = useState(null)
@@ -129,9 +129,9 @@ export default function EstatePage({ session, profile, onToast }) {
           <button onClick={() => navigate(`/estate/${id}/swipe`)} style={{ padding:'9px 16px', background:'none', border:'1px solid #D9CFC0', borderRadius:'8px', cursor:'pointer', color:'#5C4530', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
             Sveip
           </button>
-          <button onClick={() => navigate(`/estate/${id}/add`)} style={{ padding:'9px 20px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
+          {!isDemo && <button onClick={() => navigate(`/estate/${id}/add`)} style={{ padding:'9px 20px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
             + Legg til
-          </button>
+          </button>}
         </div>
       </div>
 
@@ -253,9 +253,9 @@ export default function EstatePage({ session, profile, onToast }) {
           {filtered.length === 0 ? (
             <div style={{ textAlign:'center', padding:'80px 20px', color:'#9C8267' }}>
               <p style={{ marginBottom:'20px' }}>Ingen gjenstander ennå.</p>
-              <button onClick={() => navigate(`/estate/${id}/add`)} style={{ padding:'11px 24px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
+              {!isDemo && <button onClick={() => navigate(`/estate/${id}/add`)} style={{ padding:'11px 24px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>
                 Legg til første gjenstand
-              </button>
+              </button>}
             </div>
           ) : (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:'12px' }}>
