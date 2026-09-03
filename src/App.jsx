@@ -59,7 +59,7 @@ export default function App() {
             .eq('user_id', session.user.id)
             .limit(1)
             .single()
-          navigate(membership?.estate_id ? `/estate/${membership.estate_id}/conflicts` : '/')
+          navigate(membership?.estate_id ? `/estate/${membership.estate_id}` : '/')
         } else if (!data?.display_name) {
           navigate('/setup')
         } else {
