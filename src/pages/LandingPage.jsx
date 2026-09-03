@@ -15,9 +15,11 @@ export default function LandingPage() {
     if (error) {
       console.error('Demo login error:', error.message)
       setDemoLoading(false)
-      setDemoError('Demo er ikke tilgjengelig akkurat nå. Prøv igjen litt senere.')
+      setDemoError('Demo er ikke tilgjengelig akkurat nå. Sjekk at VITE_DEMO_PASSWORD er satt riktig.')
+      return
     }
-    // On success: App.jsx detects the session change and handles navigation to the conflicts page
+    // Force a clean reload so App.jsx picks up the session fresh and navigates to conflicts
+    window.location.href = '/'
   }
 
   return (

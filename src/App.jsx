@@ -51,10 +51,8 @@ export default function App() {
     supabase.from('profiles').select('*').eq('user_id', session.user.id).single()
       .then(async ({ data }) => {
         setProfile(data)
-        const pendingCode = localStorage.getItem('pendingJoinCode')
-        if (!data?.display_name) {
-          navigate('/setup')
-        } else if (isDemo) {
+        if (isDemo) {
+          // Demo user: always go straight to conflicts page
           const { data: membership } = await supabase
             .from('estate_members')
             .select('estate_id')
@@ -62,9 +60,14 @@ export default function App() {
             .limit(1)
             .single()
           navigate(membership?.estate_id ? `/estate/${membership.estate_id}/conflicts` : '/')
-        } else if (pendingCode) {
-          localStorage.removeItem('pendingJoinCode')
-          navigate(`/join/${pendingCode}`)
+        } else if (!data?.display_name) {
+          navigate('/setup')
+        } else {
+          const pendingCode = localStorage.getItem('pendingJoinCode')
+          if (pendingCode) {
+            localStorage.removeItem('pendingJoinCode')
+            navigate(`/join/${pendingCode}`)
+          }
         }
       })
   }, [session])
