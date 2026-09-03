@@ -18,8 +18,8 @@ export default function LandingPage() {
       setDemoError('Demo er ikke tilgjengelig akkurat nå. Sjekk at VITE_DEMO_PASSWORD er satt riktig.')
       return
     }
-    // Force a clean reload so App.jsx picks up the session fresh and navigates to conflicts
-    window.location.href = '/'
+    window.open('/', '_blank')
+    setDemoLoading(false)
   }
 
   return (
