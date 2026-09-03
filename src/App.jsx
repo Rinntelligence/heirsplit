@@ -78,11 +78,11 @@ export default function App() {
       <>
         {toast && <Toast msg={toast.msg} type={toast.type} />}
         <Routes>
-          <Route path="/" element={<LandingPage onToast={showToast} />} />
+          <Route path="/home" element={<LandingPage onToast={showToast} />} />
           <Route path="/logg-inn" element={<LoginPage onToast={showToast} />} />
           <Route path="/join/:code" element={<JoinPage onToast={showToast} />} />
           <Route path="/pricing" element={<PricingPage />} />
-          <Route path="*" element={<LandingPage onToast={showToast} />} />
+          <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
       </>
     )
@@ -102,6 +102,7 @@ export default function App() {
         {!isDemo && <FeedbackWidget session={session} />}
         <Routes>
           <Route path="/" element={<EstatesPage session={session} profile={profile} onToast={showToast} isDemo={isDemo} />} />
+          <Route path="/home" element={<LandingPage onToast={showToast} />} />
           <Route path="/setup" element={<ProfileSetupPage session={session} onSaved={(p) => {
             setProfile(p)
             const pendingCode = localStorage.getItem('pendingJoinCode')
