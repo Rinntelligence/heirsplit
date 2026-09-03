@@ -202,7 +202,7 @@ export default function LandingPage() {
         {/* INTRO */}
         <section className="intro" id="for-hvem">
           <div className="eyebrow">Hvorfor Arvklart</div>
-          <h2>Vi hjelper deg med det. <em>Så dere kan bruke tiden på hverandre, ikke på regneark, misforståelser og gamle konflikter som dukker opp igjen.</em></h2>
+          <h2>Vi hjelper deg med det. <em>Så dere kan bruke tiden på hverandre, ikke på regneark og misforståelser.</em></h2>
         </section>
 
         {/* FEATURES */}
@@ -233,8 +233,8 @@ export default function LandingPage() {
         {/* DEMO */}
         <section className="demo-section" id="demo">
           <div className="eyebrow">Test ut demo</div>
-          <h2>Se hvordan Arvklart løser konflikter — uten å måtte registrere deg</h2>
-          <p>Utforsk konfliktløsning, interesseregistrering og fordeling i en ferdig oppsatt familie. Ingen konto nødvendig.</p>
+          <h2>Se hvordan Arvklart gjør arvefordeling enklere — uten å måtte registrere deg</h2>
+          <p>Utforsk oversikten, interesseregistrering og fordeling i en ferdig oppsatt familie. Ingen konto nødvendig.</p>
           <button
             className="btn btn-fill"
             onClick={handleDemo}
@@ -251,27 +251,27 @@ export default function LandingPage() {
             </div>
             <div className="demo-body">
               <div className="demo-title">Fam. Hansen sitt bo</div>
-              <div className="demo-sub">Konfliktløsning · 3 aktive saker</div>
+              <div className="demo-sub">12 gjenstander · 4 arvinger</div>
               <div className="demo-conflict">
                 <div className="demo-conflict-left">
                   <h4>Bestemors gyngestol</h4>
-                  <span>Erik og Mona er begge interesserte</span>
+                  <span>Erik og Mona er interesserte</span>
                 </div>
-                <span className="demo-badge orange">Under diskusjon</span>
+                <span className="demo-badge orange">Avventer</span>
               </div>
               <div className="demo-conflict">
                 <div className="demo-conflict-left">
                   <h4>Antikk eiketresbord</h4>
-                  <span>Mona er eneste interesserte</span>
+                  <span>Tildelt Mona</span>
                 </div>
-                <span className="demo-badge">Foreslått løst</span>
+                <span className="demo-badge">Avklart</span>
               </div>
               <div className="demo-conflict">
                 <div className="demo-conflict-left">
                   <h4>Mahognibokhylle</h4>
-                  <span>Lars og Kari diskuterer verdi</span>
+                  <span>Lars er eneste interesserte</span>
                 </div>
-                <span className="demo-badge orange">Under diskusjon</span>
+                <span className="demo-badge">Avklart</span>
               </div>
             </div>
           </div>
