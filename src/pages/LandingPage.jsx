@@ -1,35 +1,23 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { signIn, supabase } from '../lib/supabase'
+import { signIn } from '../lib/supabase'
 
 const DEMO_EMAIL = 'mona.demo@heirsplit.no'
 const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD || ''
 
-export default function LandingPage({ onToast }) {
-  const navigate = useNavigate()
+export default function LandingPage() {
   const [demoLoading, setDemoLoading] = useState(false)
+  const [demoError, setDemoError] = useState('')
 
   const handleDemo = async () => {
     setDemoLoading(true)
+    setDemoError('')
     const { error } = await signIn(DEMO_EMAIL, DEMO_PASSWORD)
     if (error) {
+      console.error('Demo login error:', error.message)
       setDemoLoading(false)
-      onToast?.('Demo er ikke tilgjengelig akkurat nå.', 'error')
-      return
+      setDemoError('Demo er ikke tilgjengelig akkurat nå. Prøv igjen litt senere.')
     }
-    // After auth state change fires in App.jsx, redirect will happen
-    // We help it along by fetching Mona's estate and navigating to conflicts
-    const { data: membership } = await supabase
-      .from('estate_members')
-      .select('estate_id')
-      .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-      .limit(1)
-      .single()
-    if (membership?.estate_id) {
-      navigate(`/estate/${membership.estate_id}/conflicts`)
-    } else {
-      navigate('/')
-    }
+    // On success: App.jsx detects the session change and handles navigation to the conflicts page
   }
 
   return (
@@ -205,6 +193,7 @@ export default function LandingPage({ onToast }) {
               </button>
               <a className="btn btn-line" href="#slik-fungerer">Se hvordan det fungerer</a>
             </div>
+            {demoError && <div style={{ marginTop: '12px', fontSize: '13px', color: '#F5C2C2', background: 'rgba(0,0,0,0.3)', padding: '8px 14px', borderRadius: '6px', maxWidth: '400px' }}>{demoError}</div>}
           </div>
         </section>
 
@@ -252,6 +241,7 @@ export default function LandingPage({ onToast }) {
           >
             {demoLoading ? 'Logger inn…' : 'Åpne demo'}
           </button>
+          {demoError && <div style={{ marginTop: '14px', fontSize: '13px', color: '#F5C2C2', background: 'rgba(0,0,0,0.3)', padding: '8px 14px', borderRadius: '6px', display: 'inline-block' }}>{demoError}</div>}
 
           <div className="demo-mockup">
             <div className="demo-topbar">

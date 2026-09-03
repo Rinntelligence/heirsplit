@@ -47,12 +47,21 @@ export default function App() {
 
   useEffect(() => {
     if (!session?.user) return
+    const isDemo = session.user.email === 'mona.demo@heirsplit.no'
     supabase.from('profiles').select('*').eq('user_id', session.user.id).single()
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         setProfile(data)
         const pendingCode = localStorage.getItem('pendingJoinCode')
         if (!data?.display_name) {
           navigate('/setup')
+        } else if (isDemo) {
+          const { data: membership } = await supabase
+            .from('estate_members')
+            .select('estate_id')
+            .eq('user_id', session.user.id)
+            .limit(1)
+            .single()
+          navigate(membership?.estate_id ? `/estate/${membership.estate_id}/conflicts` : '/')
         } else if (pendingCode) {
           localStorage.removeItem('pendingJoinCode')
           navigate(`/join/${pendingCode}`)
@@ -66,13 +75,16 @@ export default function App() {
 
   if (!session) {
     return (
-      <Routes>
-        <Route path="/" element={<LandingPage onToast={showToast} />} />
-        <Route path="/logg-inn" element={<LoginPage onToast={showToast} />} />
-        <Route path="/join/:code" element={<JoinPage onToast={showToast} />} />
-        <Route path="/pricing" element={<PricingPage />} />
-        <Route path="*" element={<LandingPage onToast={showToast} />} />
-      </Routes>
+      <>
+        {toast && <Toast msg={toast.msg} type={toast.type} />}
+        <Routes>
+          <Route path="/" element={<LandingPage onToast={showToast} />} />
+          <Route path="/logg-inn" element={<LoginPage onToast={showToast} />} />
+          <Route path="/join/:code" element={<JoinPage onToast={showToast} />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="*" element={<LandingPage onToast={showToast} />} />
+        </Routes>
+      </>
     )
   }
 
