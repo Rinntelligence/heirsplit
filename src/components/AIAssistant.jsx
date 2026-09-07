@@ -214,7 +214,7 @@ export default function AIAssistant({ item, profile }) {
 
             <div style={{ display: 'flex', gap: '10px', padding: '12px 16px', background: '#fff', borderTop: '1px solid #f0ebe4' }}>
               <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
-                placeholder="Ask about this item…"
+                placeholder="Ask about this item…" maxLength={2000}
                 style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0d8d0', borderRadius: '8px', fontSize: '14px', background: '#faf7f3', color: '#1a1410', outline: 'none', fontFamily: 'DM Sans, sans-serif' }} />
               <button onClick={send} disabled={loading || !input.trim()} style={{
                 padding: '10px 18px', background: input.trim() ? '#1a1410' : '#c0b8b0',

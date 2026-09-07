@@ -42,6 +42,11 @@ export default function DocumentVaultPage({ session, profile }) {
 
   const uploadFile = async (file) => {
     if (!file) return
+    const MAX_DOC_SIZE = 25 * 1024 * 1024 // 25 MB
+    if (file.size > MAX_DOC_SIZE) {
+      alert(`"${file.name}" er for stor. Maks filstørrelse er 25 MB.`)
+      return
+    }
     setUploading(true)
     setUploadProgress(10)
     try {

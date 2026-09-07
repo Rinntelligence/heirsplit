@@ -146,12 +146,12 @@ export default function HeirsPage({ session, profile }) {
             <div style={{ display:'flex', gap:'10px', flexWrap:'wrap' }}>
               <div style={{ flex:1, minWidth:'160px' }}>
                 <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>Fullt navn *</label>
-                <input value={newHeir.name} onChange={e => setNewHeir(p => ({ ...p, name: e.target.value }))} placeholder="f.eks. Kari Hansen"
+                <input value={newHeir.name} onChange={e => setNewHeir(p => ({ ...p, name: e.target.value }))} placeholder="f.eks. Kari Hansen" maxLength={100}
                   style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
               </div>
               <div style={{ flex:1, minWidth:'160px' }}>
                 <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>E-post (for å invitere)</label>
-                <input type="email" value={newHeir.email} onChange={e => setNewHeir(p => ({ ...p, email: e.target.value }))} placeholder="kari@epost.no"
+                <input type="email" value={newHeir.email} onChange={e => setNewHeir(p => ({ ...p, email: e.target.value }))} placeholder="kari@epost.no" maxLength={254}
                   style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function HeirsPage({ session, profile }) {
             </div>
             <div>
               <label style={{ display:'block', fontSize:'12px', color:'#9C8267', marginBottom:'5px' }}>Notater</label>
-              <input value={newHeir.notes} onChange={e => setNewHeir(p => ({ ...p, notes: e.target.value }))} placeholder="Relevante notater…"
+              <input value={newHeir.notes} onChange={e => setNewHeir(p => ({ ...p, notes: e.target.value }))} placeholder="Relevante notater…" maxLength={500}
                 style={{ width:'100%', padding:'10px 12px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
             </div>
             <div style={{ display:'flex', gap:'10px' }}>

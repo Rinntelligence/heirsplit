@@ -32,7 +32,7 @@ export default function ProfileSetupPage({ session, onSaved, onToast }) {
 
         <div style={{ marginBottom:'20px' }}>
           <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Visningsnavn</label>
-          <input value={name} onChange={e=>setName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&save()} placeholder="f.eks. Kari"
+          <input value={name} onChange={e=>setName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&save()} placeholder="f.eks. Kari" maxLength={100}
             style={{ width:'100%', padding:'12px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
         </div>
 

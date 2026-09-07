@@ -75,12 +75,12 @@ export default function EstatesPage({ session, profile, onToast }) {
           <div style={{ display:'flex', flexDirection:'column', gap:'14px', marginBottom:'20px' }}>
             <div>
               <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Navn på boet *</label>
-              <input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="f.eks. Hansens familiebu"
+              <input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="f.eks. Hansens familiebu" maxLength={200}
                 style={{ width:'100%', padding:'11px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
             </div>
             <div>
               <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Beskrivelse (valgfri)</label>
-              <input value={newDesc} onChange={e=>setNewDesc(e.target.value)} placeholder="f.eks. Gjenstander fra bestefars hus"
+              <input value={newDesc} onChange={e=>setNewDesc(e.target.value)} placeholder="f.eks. Gjenstander fra bestefars hus" maxLength={500}
                 style={{ width:'100%', padding:'11px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function EstatesPage({ session, profile, onToast }) {
         <h3 style={{ fontSize:'15px', color:'#3A2F26', marginBottom:'6px', fontWeight:'500' }}>Bli med i et bo</h3>
         <p style={{ fontSize:'13px', color:'#9C8267', marginBottom:'16px' }}>Har du en invitasjonskode? Skriv den inn nedenfor.</p>
         <div style={{ display:'flex', gap:'10px' }}>
-          <input value={joinCode} onChange={e=>setJoinCode(e.target.value.toUpperCase())} onKeyDown={e=>e.key==='Enter'&&joinByCode()} placeholder="Skriv invitasjonskode (f.eks. AB3X9K)"
+          <input value={joinCode} onChange={e=>setJoinCode(e.target.value.toUpperCase())} onKeyDown={e=>e.key==='Enter'&&joinByCode()} placeholder="Skriv invitasjonskode (f.eks. AB3X9K)" maxLength={10}
             style={{ flex:1, padding:'11px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', letterSpacing:'2px' }} />
           <button onClick={joinByCode} style={{ padding:'11px 20px', background:'#3A2F26', color:'#FBF9F5', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Bli med</button>
         </div>

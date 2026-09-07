@@ -161,7 +161,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
         ) : showReason ? (
           <div style={{ marginBottom:'24px' }}>
             <label style={{ display:'block', fontSize:'14px', color:'#5C4530', marginBottom:'10px' }}>Hvorfor vil du ha denne? <span style={{ color:'#9C8267' }}>(valgfri)</span></label>
-            <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder="f.eks. Jeg husker denne fra barndommen…" rows={3}
+            <textarea value={reason} onChange={e => setReason(e.target.value)} placeholder="f.eks. Jeg husker denne fra barndommen…" rows={3} maxLength={1000}
               style={{ width:'100%', padding:'12px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', fontFamily:'Karla, sans-serif', color:'#3A2F26', background:'#FBF9F5', resize:'vertical', outline:'none', boxSizing:'border-box' }} />
             <div style={{ display:'flex', gap:'10px', marginTop:'10px' }}>
               <button onClick={() => setShowReason(false)} style={{ flex:1, padding:'11px', background:'none', border:'1px solid #D9CFC0', borderRadius:'8px', cursor:'pointer', color:'#5C4530', fontSize:'14px', fontFamily:'Karla, sans-serif' }}>Avbryt</button>
@@ -271,7 +271,7 @@ export default function ItemDetailPage({ session, profile, onToast }) {
           <div style={{ flex:1 }}>
             <textarea value={commentText} onChange={e => setCommentText(e.target.value)}
               onKeyDown={e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleComment()} }}
-              placeholder="Skriv en kommentar… (Enter for å sende)" rows={2}
+              placeholder="Skriv en kommentar… (Enter for å sende)" rows={2} maxLength={2000}
               style={{ width:'100%', padding:'10px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', fontFamily:'Karla, sans-serif', color:'#3A2F26', background:'#FBF9F5', resize:'none', outline:'none', boxSizing:'border-box' }} />
           </div>
           <button onClick={handleComment} disabled={!commentText.trim()||submittingComment} style={{

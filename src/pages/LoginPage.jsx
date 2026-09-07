@@ -67,18 +67,18 @@ export default function LoginPage({ onToast }) {
               {mode==='signup' && (
                 <div>
                   <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Your name *</label>
-                  <input value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Sarah Johnson"
+                  <input value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Sarah Johnson" maxLength={100}
                     style={{ width:'100%', padding:'12px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
                 </div>
               )}
               <div>
                 <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Email *</label>
-                <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleSubmit()} placeholder="you@example.com"
+                <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleSubmit()} placeholder="you@example.com" maxLength={254}
                   style={{ width:'100%', padding:'12px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
               </div>
               <div>
                 <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Password *</label>
-                <input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleSubmit()} placeholder={mode==='signup'?'Min. 6 characters':'••••••••'}
+                <input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleSubmit()} placeholder={mode==='signup'?'Min. 6 characters':'••••••••'} maxLength={128}
                   style={{ width:'100%', padding:'12px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
               </div>
             </div>

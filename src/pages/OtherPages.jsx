@@ -108,7 +108,7 @@ export function CategoriesPage({ session, onToast }) {
         <p style={{ fontSize:'13px', color:'#8c7b6b', marginBottom:'14px' }}>Legg til ny kategori:</p>
         <div style={{ display:'flex', gap:'8px', marginBottom: showPicker?'12px':'0' }}>
           <button onClick={()=>setShowPicker(!showPicker)} style={{ padding:'10px 14px', border:'1px solid #e0d8d0', borderRadius:'8px', background:'#faf7f3', cursor:'pointer', fontSize:'20px' }}>{newEmoji}</button>
-          <input value={newLabel} onChange={e=>setNewLabel(e.target.value)} onKeyDown={e=>e.key==='Enter'&&add()} placeholder="Kategorinavn…"
+          <input value={newLabel} onChange={e=>setNewLabel(e.target.value)} onKeyDown={e=>e.key==='Enter'&&add()} placeholder="Kategorinavn…" maxLength={100}
             style={{ flex:1, padding:'10px 14px', border:'1px solid #e0d8d0', borderRadius:'8px', fontSize:'15px', background:'#faf7f3', color:'#1a1410', outline:'none', fontFamily:'DM Sans, sans-serif' }} />
           <button onClick={add} disabled={!newLabel.trim()} style={{ padding:'10px 18px', background:newLabel.trim()?'#1a1410':'#c0b8b0', color:'#f5f0eb', border:'none', borderRadius:'8px', cursor:newLabel.trim()?'pointer':'not-allowed', fontSize:'14px', fontFamily:'DM Sans, sans-serif' }}>+</button>
         </div>

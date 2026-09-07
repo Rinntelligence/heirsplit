@@ -139,9 +139,9 @@ export default function TasksPage({ session, profile }) {
         <div style={{ background: '#fff', border: '1px solid #D9CFC0', borderRadius: '12px', padding: '24px', marginBottom: '20px' }}>
           <h3 style={{ fontSize: '16px', color: '#3A2F26', marginBottom: '16px', fontFamily: 'Fraunces, serif', fontWeight: '400' }}>Legg til egendefinert oppgave</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <input value={newTask.title} onChange={e => setNewTask(p => ({ ...p, title: e.target.value }))} placeholder="Oppgavetittel *"
+            <input value={newTask.title} onChange={e => setNewTask(p => ({ ...p, title: e.target.value }))} placeholder="Oppgavetittel *" maxLength={200}
               style={{ width: '100%', padding: '11px 14px', border: '1px solid #D9CFC0', borderRadius: '8px', fontSize: '14px', background: '#FBF9F5', color: '#3A2F26', outline: 'none', fontFamily: 'Karla, sans-serif', boxSizing: 'border-box' }} />
-            <input value={newTask.description} onChange={e => setNewTask(p => ({ ...p, description: e.target.value }))} placeholder="Beskrivelse (valgfri)"
+            <input value={newTask.description} onChange={e => setNewTask(p => ({ ...p, description: e.target.value }))} placeholder="Beskrivelse (valgfri)" maxLength={1000}
               style={{ width: '100%', padding: '11px 14px', border: '1px solid #D9CFC0', borderRadius: '8px', fontSize: '14px', background: '#FBF9F5', color: '#3A2F26', outline: 'none', fontFamily: 'Karla, sans-serif', boxSizing: 'border-box' }} />
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               <select value={newTask.category} onChange={e => setNewTask(p => ({ ...p, category: e.target.value }))}

@@ -35,7 +35,11 @@ export default function EditItemPage({ session, profile, onToast }) {
   }, [itemId])
 
   const handleNewImages = (e) => {
-    const files = Array.from(e.target.files)
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024 // 10 MB
+    const files = Array.from(e.target.files).filter(f => {
+      if (f.size > MAX_IMAGE_SIZE) { onToast(`"${f.name}" er for stor (maks 10 MB)`, 'error'); return false }
+      return true
+    })
     const total = existingImages.length + newFiles.length + files.length
     if (total > 5) {
       onToast(`Maks 5 bilder totalt (har ${existingImages.length + newFiles.length})`, 'error')
@@ -160,7 +164,7 @@ export default function EditItemPage({ session, profile, onToast }) {
         {/* Title */}
         <div>
           <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Navn *</label>
-          <input value={title} onChange={e => setTitle(e.target.value)}
+          <input value={title} onChange={e => setTitle(e.target.value)} maxLength={200}
             style={{ width:'100%', padding:'14px', border:'1px solid #D9CFC0', borderRadius:'10px', fontSize:'16px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
         </div>
 
@@ -193,7 +197,7 @@ export default function EditItemPage({ session, profile, onToast }) {
         {/* Description */}
         <div>
           <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Beskrivelse</label>
-          <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3}
+          <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} maxLength={2000}
             placeholder="Materiale, farge, historikk…"
             style={{ width:'100%', padding:'14px', border:'1px solid #D9CFC0', borderRadius:'10px', fontSize:'15px', fontFamily:'Karla, sans-serif', background:'#FBF9F5', color:'#3A2F26', resize:'none', outline:'none', boxSizing:'border-box' }} />
         </div>
@@ -201,7 +205,7 @@ export default function EditItemPage({ session, profile, onToast }) {
         {/* Estimated value */}
         <div>
           <label style={{ display:'block', fontSize:'13px', color:'#9C8267', marginBottom:'6px' }}>Estimert verdi (valgfri)</label>
-          <input value={estimatedValue} onChange={e => setEstimatedValue(e.target.value)}
+          <input value={estimatedValue} onChange={e => setEstimatedValue(e.target.value)} maxLength={100}
             placeholder="f.eks. 1000-2000 kr"
             style={{ width:'100%', padding:'14px', border:'1px solid #D9CFC0', borderRadius:'10px', fontSize:'15px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
         </div>

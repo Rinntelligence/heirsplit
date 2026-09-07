@@ -67,7 +67,7 @@ export default function FeedbackWidget({ session }) {
                 </div>
                 <textarea value={content} onChange={e => setContent(e.target.value)}
                   placeholder={type==='bug'?'Hva gikk galt?':type==='idea'?'Hvilken funksjon mangler?':'Fortell oss hva du synes…'}
-                  rows={4} style={{
+                  rows={4} maxLength={2000} style={{
                     width: '100%', padding: '12px', border: '1px solid #e0d8d0',
                     borderRadius: '8px', fontSize: '15px', fontFamily: 'DM Sans, sans-serif',
                     background: '#faf7f3', color: '#1a1410', resize: 'none',

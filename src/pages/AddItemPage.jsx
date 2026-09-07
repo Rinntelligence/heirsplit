@@ -53,7 +53,11 @@ export default function AddItemPage({ session, profile, onToast }) {
   }, [id])
 
   const handleImages = (e) => {
-    const files = Array.from(e.target.files).slice(0, 5)
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024 // 10 MB
+    const files = Array.from(e.target.files).filter(f => {
+      if (f.size > MAX_IMAGE_SIZE) { onToast(`"${f.name}" er for stor (maks 10 MB)`, 'error'); return false }
+      return true
+    }).slice(0, 5)
     if (!files.length) return
     const newFiles = [...imageFiles, ...files].slice(0, 5)
     setImageFiles(newFiles)
@@ -238,6 +242,7 @@ export default function AddItemPage({ session, profile, onToast }) {
             onChange={e => setTitle(e.target.value)}
             placeholder="f.eks. Bestemors gyngestol"
             autoFocus
+            maxLength={200}
             style={{
               width: '100%', padding: '14px', border: '1px solid #D9CFC0',
               borderRadius: '10px', fontSize: '16px', background: '#FBF9F5',
@@ -294,6 +299,7 @@ export default function AddItemPage({ session, profile, onToast }) {
             onChange={e => setDescription(e.target.value)}
             placeholder="Materiale, farge, historikk, minner…"
             rows={3}
+            maxLength={2000}
             style={{
               width: '100%', padding: '14px', border: '1px solid #D9CFC0',
               borderRadius: '10px', fontSize: '15px', fontFamily: 'Karla, sans-serif',

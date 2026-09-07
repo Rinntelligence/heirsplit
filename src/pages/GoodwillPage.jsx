@@ -222,9 +222,9 @@ export default function GoodwillPage({ session, profile }) {
             <div style={{ background:'#fff', border:'1px solid #D9CFC0', borderRadius:'12px', padding:'24px', marginBottom:'16px' }}>
               <h3 style={{ fontFamily:'Fraunces, serif', fontSize:'16px', fontWeight:'400', color:'#3A2F26', marginBottom:'16px' }}>Legg til oppgave</h3>
               <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
-                <input value={newChore.title} onChange={e => setNewChore(p => ({ ...p, title: e.target.value }))} placeholder="Oppgavetittel, f.eks. Rydde garasjen"
+                <input value={newChore.title} onChange={e => setNewChore(p => ({ ...p, title: e.target.value }))} placeholder="Oppgavetittel, f.eks. Rydde garasjen" maxLength={200}
                   style={{ width:'100%', padding:'11px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
-                <input value={newChore.description} onChange={e => setNewChore(p => ({ ...p, description: e.target.value }))} placeholder="Beskrivelse (valgfri)"
+                <input value={newChore.description} onChange={e => setNewChore(p => ({ ...p, description: e.target.value }))} placeholder="Beskrivelse (valgfri)" maxLength={500}
                   style={{ width:'100%', padding:'11px 14px', border:'1px solid #D9CFC0', borderRadius:'8px', fontSize:'14px', background:'#FBF9F5', color:'#3A2F26', outline:'none', fontFamily:'Karla, sans-serif', boxSizing:'border-box' }} />
                 <div style={{ display:'flex', gap:'8px', flexWrap:'wrap' }}>
                   {CHORE_SIZES.map(s => (
